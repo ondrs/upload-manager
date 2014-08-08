@@ -43,7 +43,7 @@ class Utils
 
             if (!is_dir($path)) {
                 @mkdir($path);
-                chmod($path, 0775);
+                @chmod($path, 0777);
             }
 
             $path .= '/';
