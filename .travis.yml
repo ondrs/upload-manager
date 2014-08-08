@@ -8,4 +8,4 @@ before_script:
   - composer self-update
   - composer install --no-interaction --prefer-source --dev
 
-script: VERBOSE=true ./tests/test.sh
+script: VERBOSE=true ./test.sh
