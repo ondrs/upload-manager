@@ -9,4 +9,4 @@ before_script:
   - composer install --no-interaction --prefer-source --dev
   - ./vendor/bin/parallel-lint -e php,phpt --exclude vendor .
 
-script: VERBOSE=true ./tests/test.sh
+script: VERBOSE=true ./vendor/bin/tester -c ./tests/php.ini-unix -j 40 .
