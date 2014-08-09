@@ -6,6 +6,7 @@ namespace ondrs\Uploader\DI;
 use Nette\Configurator;
 use Nette\DI\Compiler;
 use Nette\DI\CompilerExtension;
+use ondrs\Uploader\Exception;
 
 class UploaderExtension extends CompilerExtension
 {
@@ -13,6 +14,10 @@ class UploaderExtension extends CompilerExtension
     /** @var array */
     private $defaults = [
         'basePath' => '%wwwDir%',
+        'relativePath' => NULL,
+        'dimensions' => NULL,
+        'maxSize' => NULL,
+        'blacklist' => NULL,
         '@httpRequest',
     ];
 
@@ -22,19 +27,23 @@ class UploaderExtension extends CompilerExtension
         $config = $this->getConfig($this->defaults);
         $builder = $this->getContainerBuilder();
 
+        if($config['relativePath'] === NULL) {
+            throw new Exception('reletivePath must be set');
+        }
+
         $builder->addDefinition($this->prefix('imageManager'))
             ->setClass('ondrs\Uploader\ImageManager', [
-                $builder->getDefinition('basePath'),
-                $builder->getDefinition('relativePath'),
-                $builder->getDefinition('dimensions'),
-                $builder->getDefinition('maxSize'),
+                $config['basePath'],
+                $config['relativePath'],
+                $config['dimensions'],
+                $config['maxSize'],
             ]);
 
         $builder->addDefinition($this->prefix('fileManager'))
             ->setClass('ondrs\Uploader\ImageManager', [
-                $builder->getDefinition('basePath'),
-                $builder->getDefinition('relativePath'),
-                $builder->getDefinition('blacklist'),
+                $config['basePath'],
+                $config['relativePath'],
+                $config['blacklist'],
             ]);
 
         $builder->addDefinition($this->prefix('upload'))
