@@ -15,9 +15,17 @@ class UploaderExtension extends CompilerExtension
     private $defaults = [
         'basePath' => '%wwwDir%',
         'relativePath' => NULL,
-        'dimensions' => NULL,
-        'maxSize' => NULL,
-        'blacklist' => NULL,
+        'imageManager' => [
+            'basePath' => NULL,
+            'relativePath' => NULL,
+            'dimensions' => NULL,
+            'maxSize' => NULL,
+        ],
+        'fileManager' => [
+            'basePath' => NULL,
+            'relativePath' => NULL,
+            'blacklist' => NULL,
+        ],
         '@httpRequest',
     ];
 
@@ -27,30 +35,30 @@ class UploaderExtension extends CompilerExtension
         $config = $this->getConfig($this->defaults);
         $builder = $this->getContainerBuilder();
 
-        if($config['relativePath'] === NULL) {
-            throw new Exception('reletivePath must be set');
+        if ($config['relativePath'] === NULL) {
+            throw new Exception('relativePath must be set');
         }
 
         $builder->addDefinition($this->prefix('imageManager'))
             ->setClass('ondrs\Uploader\ImageManager', [
-                $config['basePath'],
-                $config['relativePath'],
-                $config['dimensions'],
-                $config['maxSize'],
+                $config['imageManager']['basePath'] ? $config['imageManager']['basePath'] : $config['basePath'],
+                $config['imageManager']['relativePath'] ? $config['imageManager']['relativePath'] : $config['relativePath'],
+                $config['imageManager']['dimensions'],
+                $config['imageManager']['maxSize'],
             ]);
 
         $builder->addDefinition($this->prefix('fileManager'))
-            ->setClass('ondrs\Uploader\ImageManager', [
-                $config['basePath'],
-                $config['relativePath'],
-                $config['blacklist'],
+            ->setClass('ondrs\Uploader\FileManager', [
+                $config['fileManager']['basePath'] ? $config['fileManager']['basePath'] : $config['basePath'],
+                $config['fileManager']['relativePath'] ? $config['fileManager']['relativePath'] : $config['relativePath'],
+                $config['fileManager']['blacklist'],
             ]);
 
         $builder->addDefinition($this->prefix('upload'))
             ->setClass('ondrs\Uploader\Upload', [
                 $builder->getDefinition('@httpRequest'),
-                $builder->getByType('ondrs\Uploader\ImageManager'),
-                $builder->getByType('ondrs\Uploader\FileManager'),
+                $builder->getDefinition($this->prefix('imageManager')),
+                $builder->getDefinition($this->prefix('fileManager')),
             ]);
 
     }
