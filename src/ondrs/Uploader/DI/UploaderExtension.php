@@ -26,7 +26,6 @@ class UploaderExtension extends CompilerExtension
             'relativePath' => NULL,
             'blacklist' => NULL,
         ],
-        '@httpRequest',
     ];
 
 
@@ -56,7 +55,7 @@ class UploaderExtension extends CompilerExtension
 
         $builder->addDefinition($this->prefix('upload'))
             ->setClass('ondrs\Uploader\Upload', [
-                $builder->getDefinition('@httpRequest'),
+                $builder->getByType('Nette\Http\Request'),
                 $builder->getDefinition($this->prefix('imageManager')),
                 $builder->getDefinition($this->prefix('fileManager')),
             ]);
