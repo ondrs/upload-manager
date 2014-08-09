@@ -66,7 +66,7 @@ class UploaderExtension extends CompilerExtension
     /**
      * @param Configurator $configurator
      */
-    public static function register(Configurator $configurator)
+    public static function register(Con $configurator)
     {
         $configurator->onCompile[] = function ($config, Compiler $compiler) {
             $compiler->addExtension('uploader', new UploaderExtension());
