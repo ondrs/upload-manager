@@ -9,7 +9,7 @@ require_once __DIR__ . '/../../bootstrap.php';
 class ImageManagerTest extends Tester\TestCase
 {
 
-    /** @var \ondrs\Uploader\ImageManager */
+    /** @var \ondrs\UploadManager\ImageManager */
     private $imageManager;
 
     const RELATIVE_PATH = 'ImageManager';
@@ -17,7 +17,7 @@ class ImageManagerTest extends Tester\TestCase
 
     function setUp()
     {
-        $this->imageManager = new \ondrs\Uploader\ImageManager(TEMP_DIR, 'ImageManager');
+        $this->imageManager = new \ondrs\UploadManager\ImageManager(TEMP_DIR, 'ImageManager');
     }
 
 

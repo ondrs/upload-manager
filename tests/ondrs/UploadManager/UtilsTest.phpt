@@ -12,7 +12,7 @@ class UtilsTest extends Tester\TestCase
 
     function testNormalizePath()
     {
-        Assert::same('/aaa/aaaa/vvv', \ondrs\Uploader\Utils::normalizePath('/////aaa/aaaa//vvv/////'));
+        Assert::same('/aaa/aaaa/vvv', \ondrs\UploadManager\Utils::normalizePath('/////aaa/aaaa//vvv/////'));
     }
 
 
@@ -20,7 +20,7 @@ class UtilsTest extends Tester\TestCase
     {
         $dir = TEMP_DIR . '/a/b/c/d/e';
         Assert::false(is_dir($dir));
-        \ondrs\Uploader\Utils::makeDirectoryRecursive($dir);
+        \ondrs\UploadManager\Utils::makeDirectoryRecursive($dir);
         Assert::true(is_dir($dir));
     }
 

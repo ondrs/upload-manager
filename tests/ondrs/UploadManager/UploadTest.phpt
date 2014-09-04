@@ -1,7 +1,7 @@
 <?php
 
 
-use ondrs\Uploader\Upload;
+use ondrs\UploadManager\Upload;
 use Tester\Assert;
 
 require_once __DIR__ . '/../../bootstrap.php';
@@ -28,11 +28,11 @@ class UploadTest extends Tester\TestCase
         $file = new \SplFileInfo(__DIR__ . '/data/test-file.txt');
         $image = new \SplFileInfo(__DIR__ . '/data/test-image.jpg');
 
-        $this->fileManager = \Mockista\mock('ondrs\Uploader\FileManager');
+        $this->fileManager = \Mockista\mock('ondrs\UploadManager\FileManager');
         $this->fileManager->expects('upload')
             ->andReturn($file);
 
-        $this->imageManager = \Mockista\mock('ondrs\Uploader\ImageManager');
+        $this->imageManager = \Mockista\mock('ondrs\UploadManager\ImageManager');
         $this->imageManager->expects('upload')
             ->andReturn($image);
 

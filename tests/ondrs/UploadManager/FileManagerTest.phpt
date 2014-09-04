@@ -9,7 +9,7 @@ require_once __DIR__ . '/../../bootstrap.php';
 class FileManagerTest extends Tester\TestCase
 {
 
-    /** @var \ondrs\Uploader\FileManager */
+    /** @var \ondrs\UploadManager\FileManager */
     private $fileManager;
 
     const RELATIVE_PATH = 'FileManager';
@@ -17,7 +17,7 @@ class FileManagerTest extends Tester\TestCase
 
     function setUp()
     {
-        $this->fileManager = new \ondrs\Uploader\FileManager(TEMP_DIR, 'FileManager');
+        $this->fileManager = new \ondrs\UploadManager\FileManager(TEMP_DIR, 'FileManager');
     }
 
 
@@ -94,7 +94,7 @@ class FileManagerTest extends Tester\TestCase
 
         Assert::exception(function () use ($fileUpload) {
             $this->fileManager->upload($fileUpload);
-        }, 'ondrs\Uploader\NotAllowedFileException');
+        }, 'ondrs\UploadManager\NotAllowedFileException');
     }
 }
 

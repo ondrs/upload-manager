@@ -6,7 +6,7 @@
  * Time: 19:10
  */
 
-namespace ondrs\Uploader;
+namespace ondrs\UploadManager;
 
 
 use Nette\Http\FileUpload;

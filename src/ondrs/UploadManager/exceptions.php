@@ -1,6 +1,6 @@
 <?php
 
-namespace ondrs\Uploader;
+namespace ondrs\UploadManager;
 
 class Exception extends \Exception
 {

@@ -6,7 +6,7 @@
  * Time: 19:09
  */
 
-namespace ondrs\Uploader;
+namespace ondrs\UploadManager;
 
 
 use Nette\Http\FileUpload;
@@ -20,10 +20,10 @@ class Upload extends Object
     /** @var Request */
     private $httpRequest;
 
-    /** @var \ondrs\Uploader\ImageManager */
+    /** @var \ondrs\UploadManager\ImageManager */
     private $imageManager;
 
-    /** @var \ondrs\Uploader\FileManager */
+    /** @var \ondrs\UploadManager\FileManager */
     private $fileManager;
 
     /** @var array */

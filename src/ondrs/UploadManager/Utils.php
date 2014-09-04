@@ -6,7 +6,7 @@
  * Time: 19:09
  */
 
-namespace ondrs\Uploader;
+namespace ondrs\UploadManager;
 
 
 class Utils

@@ -1,14 +1,14 @@
 <?php
 
-namespace ondrs\Uploader\DI;
+namespace ondrs\UploadManager\DI;
 
 
 use Nette\Configurator;
 use Nette\DI\Compiler;
 use Nette\DI\CompilerExtension;
-use ondrs\Uploader\Exception;
+use ondrs\UploadManager\Exception;
 
-class UploaderExtension extends CompilerExtension
+class Extension extends CompilerExtension
 {
 
     /** @var array */
@@ -69,7 +69,7 @@ class UploaderExtension extends CompilerExtension
     public static function register(Configurator $configurator)
     {
         $configurator->onCompile[] = function ($config, Compiler $compiler) {
-            $compiler->addExtension('uploader', new UploaderExtension());
+            $compiler->addExtension('uploader', new Extension());
         };
     }
 
