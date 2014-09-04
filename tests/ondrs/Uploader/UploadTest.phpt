@@ -94,11 +94,11 @@ class UploadTest extends Tester\TestCase
         $this->httpRequest->expects('getFiles')
             ->andReturn([$fileUpload, $fileUpload]);
 
-        $this->upload->onQueueBegin[] = function(array $files) {
+        $this->upload->onQueueBegin[] = function(array $files, $dir) {
             Assert::count(2, $files);
         };
 
-        $this->upload->onQueueComplete[] = function(array $files, array $uploaded) {
+        $this->upload->onQueueComplete[] = function(array $files, array $uploaded, $dir) {
             Assert::count(2, $files);
             Assert::count(2, $uploaded);
         };
