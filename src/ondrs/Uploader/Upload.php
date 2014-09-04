@@ -27,7 +27,16 @@ class Upload extends Object
     private $fileManager;
 
     /** @var array */
-    public $onSuccess;
+    public $onQueueBegin;
+
+    /** @var array */
+    public $onQueueComplete;
+
+    /** @var array */
+    public $onFileBegin;
+
+    /** @var array */
+    public $onFileComplete;
 
 
     /**
@@ -49,18 +58,23 @@ class Upload extends Object
     public function listen()
     {
         $dir = $this->httpRequest->getQuery('dir');
+        $uploadedFiles = [];
+
+        $this->onQueueBegin($this->httpRequest->getFiles(), $dir);
 
         foreach ($this->httpRequest->getFiles() as $file) {
 
             if (is_array($file)) {
                 foreach ($file as $f) {
-                    $this->upload($f, $dir);
+                    $uploadedFiles[] = $this->upload($f, $dir);
                 }
 
             } else {
-                $this->upload($file, $dir);
+                $uploadedFiles[] = $this->upload($file, $dir);
             }
         }
+
+        $this->onQueueComplete($this->httpRequest->getFiles(), $uploadedFiles, $dir);
     }
 
 
@@ -71,13 +85,15 @@ class Upload extends Object
      */
     public function upload(FileUpload $fileUpload, $dir = NULL)
     {
+        $this->onFileBegin($fileUpload, $dir);
+
         if ($fileUpload->isImage()) {
             $uploadedFile = $this->imageManager->upload($fileUpload, $dir);
         } else {
             $uploadedFile = $this->fileManager->upload($fileUpload, $dir);
         }
 
-        $this->onSuccess($fileUpload, $uploadedFile, $dir);
+        $this->onFileComplete($fileUpload, $uploadedFile, $dir);
 
         return $uploadedFile;
     }

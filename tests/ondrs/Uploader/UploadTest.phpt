@@ -63,7 +63,7 @@ class UploadTest extends Tester\TestCase
         $this->httpRequest->expects('getFiles')
             ->andReturn([$fileUpload, $fileUpload]);
 
-        $this->upload->onSuccess[] = function (\Nette\Http\FileUpload $upload, \SplFileInfo $uploadedFile, $dir) use ($fileUpload) {
+        $this->upload->onFileComplete[] = function (\Nette\Http\FileUpload $upload, \SplFileInfo $uploadedFile, $dir) use ($fileUpload) {
             Assert::same($fileUpload, $upload);
             Assert::true($fileUpload->isImage());
             Assert::equal('test-image.jpg', $uploadedFile->getBasename());
@@ -94,7 +94,20 @@ class UploadTest extends Tester\TestCase
         $this->httpRequest->expects('getFiles')
             ->andReturn([$fileUpload, $fileUpload]);
 
-        $this->upload->onSuccess[] = function (\Nette\Http\FileUpload $upload, \SplFileInfo $uploadedFile, $dir) use ($fileUpload) {
+        $this->upload->onQueueBegin[] = function(array $files) {
+            Assert::count(2, $files);
+        };
+
+        $this->upload->onQueueComplete[] = function(array $files, array $uploaded) {
+            Assert::count(2, $files);
+            Assert::count(2, $uploaded);
+        };
+
+        $this->upload->onFileBegin[] = function (\Nette\Http\FileUpload $upload, $dir) use ($fileUpload) {
+            Assert::same($fileUpload, $upload);
+        };
+
+        $this->upload->onFileComplete[] = function (\Nette\Http\FileUpload $upload, \SplFileInfo $uploadedFile, $dir) use ($fileUpload) {
             Assert::same($fileUpload, $upload);
             Assert::false($fileUpload->isImage());
             Assert::equal('test-file.txt', $uploadedFile->getBasename());
