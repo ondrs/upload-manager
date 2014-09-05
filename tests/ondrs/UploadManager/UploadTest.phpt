@@ -40,7 +40,7 @@ class UploadTest extends Tester\TestCase
         $this->httpRequest->expects('getQuery')
             ->andReturn(NULL);
 
-        $this->upload = new Upload($this->httpRequest, $this->imageManager, $this->fileManager);
+        $this->upload = new Upload($this->imageManager, $this->fileManager, $this->httpRequest);
     }
 
 
@@ -62,6 +62,9 @@ class UploadTest extends Tester\TestCase
 
         $this->httpRequest->expects('getFiles')
             ->andReturn([$fileUpload, $fileUpload]);
+
+        $this->imageManager->expects('getRelativePath')
+            ->andReturn('');
 
         $this->upload->onFileComplete[] = function (\Nette\Http\FileUpload $upload, \SplFileInfo $uploadedFile, $dir) use ($fileUpload) {
             Assert::same($fileUpload, $upload);
@@ -94,11 +97,14 @@ class UploadTest extends Tester\TestCase
         $this->httpRequest->expects('getFiles')
             ->andReturn([$fileUpload, $fileUpload]);
 
-        $this->upload->onQueueBegin[] = function(array $files, $dir) {
+        $this->fileManager->expects('getRelativePath')
+            ->andReturn('');
+
+        $this->upload->onQueueBegin[] = function(array $files) {
             Assert::count(2, $files);
         };
 
-        $this->upload->onQueueComplete[] = function(array $files, array $uploaded, $dir) {
+        $this->upload->onQueueComplete[] = function(array $files, array $uploaded) {
             Assert::count(2, $files);
             Assert::count(2, $uploaded);
         };
@@ -135,6 +141,9 @@ class UploadTest extends Tester\TestCase
             'error' => 0
         ]);
 
+        $this->fileManager->expects('getRelativePath')
+            ->andReturn('');
+
         $splInfo = $this->upload->upload($fileUpload);
 
         Assert::false($fileUpload->isImage());
@@ -160,6 +169,9 @@ class UploadTest extends Tester\TestCase
             'tmp_name' => $filePath,
             'error' => 0
         ]);
+
+        $this->imageManager->expects('getRelativePath')
+            ->andReturn('');
 
         $splInfo = $this->upload->upload($fileUpload);
 

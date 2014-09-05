@@ -116,6 +116,9 @@ class FileManager extends Object implements IUpload
      */
     public function delete($dir, $filename)
     {
-        FileSystem::delete(Utils::normalizePath($dir) . '/' . $filename);
+        $dir = $this->getBasePath() . '/' . $this->getRelativePath() . '/' . $dir;
+        $dir = Utils::normalizePath($dir);
+
+        FileSystem::delete($dir . '/' . $filename);
     }
 }

@@ -12,8 +12,6 @@ class ImageManagerTest extends Tester\TestCase
     /** @var \ondrs\UploadManager\ImageManager */
     private $imageManager;
 
-    const RELATIVE_PATH = 'ImageManager';
-
 
     function setUp()
     {
@@ -50,9 +48,9 @@ class ImageManagerTest extends Tester\TestCase
 
     function testDeleteImages()
     {
-        $img = TEMP_DIR . '/test-image.jpg';
-        $img800 = TEMP_DIR . '/800_test-image.jpg';
-        $img250 = TEMP_DIR . '/250_test-image.jpg';
+        $img = TEMP_DIR . '/ImageManager/test-image.jpg';
+        $img800 = TEMP_DIR . '/ImageManager/800_test-image.jpg';
+        $img250 = TEMP_DIR . '/ImageManager/250_test-image.jpg';
 
         copy(__DIR__ . '/data/test-image.jpg', $img);
         copy(__DIR__ . '/data/test-image.jpg', $img800);
@@ -62,7 +60,7 @@ class ImageManagerTest extends Tester\TestCase
         Assert::true(file_exists($img800));
         Assert::true(file_exists($img250));
 
-        $this->imageManager->delete(TEMP_DIR, 'test-image.jpg');
+        $this->imageManager->delete(NULL, 'test-image.jpg');
 
         Assert::false(file_exists($img));
         Assert::false(file_exists($img800));

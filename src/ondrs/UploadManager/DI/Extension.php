@@ -55,7 +55,6 @@ class Extension extends CompilerExtension
 
         $builder->addDefinition($this->prefix('upload'))
             ->setClass('ondrs\UploadManager\Upload', [
-                $builder->getByType('Nette\Http\Request'),
                 $builder->getDefinition($this->prefix('imageManager')),
                 $builder->getDefinition($this->prefix('fileManager')),
             ]);

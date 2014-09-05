@@ -40,26 +40,58 @@ class Upload extends Object
 
 
     /**
-     * @param Request $request
      * @param ImageManager $imageManager
      * @param FileManager $fileManager
+     * @param Request $request
      */
-    public function __construct(Request $request, ImageManager $imageManager, FileManager $fileManager)
+    public function __construct(ImageManager $imageManager, FileManager $fileManager, Request $request)
     {
-        $this->httpRequest = $request;
         $this->imageManager = $imageManager;
         $this->fileManager = $fileManager;
+        $this->httpRequest = $request;
+    }
+
+    /**
+     * @param \ondrs\UploadManager\FileManager $fileManager
+     */
+    public function setFileManager($fileManager)
+    {
+        $this->fileManager = $fileManager;
+    }
+
+    /**
+     * @return \ondrs\UploadManager\FileManager
+     */
+    public function getFileManager()
+    {
+        return $this->fileManager;
+    }
+
+    /**
+     * @param \ondrs\UploadManager\ImageManager $imageManager
+     */
+    public function setImageManager($imageManager)
+    {
+        $this->imageManager = $imageManager;
+    }
+
+    /**
+     * @return \ondrs\UploadManager\ImageManager
+     */
+    public function getImageManager()
+    {
+        return $this->imageManager;
     }
 
 
     /**
-     * @param null|string $dir
+     *
      */
     public function listen($dir = NULL)
     {
         $uploadedFiles = [];
 
-        $this->onQueueBegin($this->httpRequest->getFiles(), $dir);
+        $this->onQueueBegin($this->httpRequest->getFiles());
 
         foreach ($this->httpRequest->getFiles() as $file) {
 
@@ -73,7 +105,7 @@ class Upload extends Object
             }
         }
 
-        $this->onQueueComplete($this->httpRequest->getFiles(), $uploadedFiles, $dir);
+        $this->onQueueComplete($this->httpRequest->getFiles(), $uploadedFiles);
     }
 
 
@@ -84,15 +116,14 @@ class Upload extends Object
      */
     public function upload(FileUpload $fileUpload, $dir = NULL)
     {
-        $this->onFileBegin($fileUpload, $dir);
+        $usedManager = $fileUpload->isImage() ? 'imageManager' : 'fileManager';
+        $path = Utils::normalizePath($this->$usedManager->getRelativePath() . '/' . $dir);
 
-        if ($fileUpload->isImage()) {
-            $uploadedFile = $this->imageManager->upload($fileUpload, $dir);
-        } else {
-            $uploadedFile = $this->fileManager->upload($fileUpload, $dir);
-        }
+        $this->onFileBegin($fileUpload, $path);
 
-        $this->onFileComplete($fileUpload, $uploadedFile, $dir);
+        $uploadedFile = $this->$usedManager->upload($fileUpload, $dir);
+
+        $this->onFileComplete($fileUpload, $uploadedFile, $path);
 
         return $uploadedFile;
     }

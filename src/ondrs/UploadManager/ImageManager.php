@@ -77,7 +77,7 @@ class ImageManager extends Object implements IUpload
     {
         $this->dimensions = array_map(function ($i) {
 
-            $i[1] = isset(self::$method[$i[1]])
+            $i[1] = isset($i[1]) && isset(self::$method[$i[1]])
                 ? self::$method[$i[1]]
                 : Image::SHRINK_ONLY;
 
@@ -180,6 +180,9 @@ class ImageManager extends Object implements IUpload
         }, $filter);
 
         $filter[] = $filename;
+
+        $dir = $this->getBasePath() . '/' . $this->getRelativePath() . '/' . $dir;
+        $dir = Utils::normalizePath($dir);
 
         foreach (Finder::findFiles($filter)->in($dir) as $filePath => $file) {
             FileSystem::delete($filePath);

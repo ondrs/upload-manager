@@ -12,8 +12,6 @@ class FileManagerTest extends Tester\TestCase
     /** @var \ondrs\UploadManager\FileManager */
     private $fileManager;
 
-    const RELATIVE_PATH = 'FileManager';
-
 
     function setUp()
     {
@@ -44,13 +42,13 @@ class FileManagerTest extends Tester\TestCase
 
     function testDeleteFile()
     {
-        $filePath = TEMP_DIR . '/test-file2.txt';
+        $filePath = TEMP_DIR . '/FileManager/test-file2.txt';
 
         copy(__DIR__ . '/data/test-file.txt', $filePath);
 
         Assert::true(file_exists($filePath));
 
-        $this->fileManager->delete(TEMP_DIR, 'test-file2.txt');
+        $this->fileManager->delete(NULL, 'test-file2.txt');
         Assert::false(file_exists($filePath));
     }
 
