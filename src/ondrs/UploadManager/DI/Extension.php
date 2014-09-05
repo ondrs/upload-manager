@@ -39,7 +39,7 @@ class Extension extends CompilerExtension
         }
 
         $builder->addDefinition($this->prefix('imageManager'))
-            ->setClass('ondrs\Uploader\ImageManager', [
+            ->setClass('ondrs\UploadManager\ImageManager', [
                 $config['imageManager']['basePath'] ? $config['imageManager']['basePath'] : $config['basePath'],
                 $config['imageManager']['relativePath'] ? $config['imageManager']['relativePath'] : $config['relativePath'],
                 $config['imageManager']['dimensions'],
@@ -47,14 +47,14 @@ class Extension extends CompilerExtension
             ]);
 
         $builder->addDefinition($this->prefix('fileManager'))
-            ->setClass('ondrs\Uploader\FileManager', [
+            ->setClass('ondrs\UploadManager\FileManager', [
                 $config['fileManager']['basePath'] ? $config['fileManager']['basePath'] : $config['basePath'],
                 $config['fileManager']['relativePath'] ? $config['fileManager']['relativePath'] : $config['relativePath'],
                 $config['fileManager']['blacklist'],
             ]);
 
         $builder->addDefinition($this->prefix('upload'))
-            ->setClass('ondrs\Uploader\Upload', [
+            ->setClass('ondrs\UploadManager\Upload', [
                 $builder->getByType('Nette\Http\Request'),
                 $builder->getDefinition($this->prefix('imageManager')),
                 $builder->getDefinition($this->prefix('fileManager')),
@@ -69,7 +69,7 @@ class Extension extends CompilerExtension
     public static function register(Configurator $configurator)
     {
         $configurator->onCompile[] = function ($config, Compiler $compiler) {
-            $compiler->addExtension('uploader', new Extension());
+            $compiler->addExtension('UploadManager', new Extension());
         };
     }
 
