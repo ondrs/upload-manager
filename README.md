@@ -46,12 +46,12 @@ Full configuration:
                     - {100, NULL}
                     - shrink_only
 
-In  most cases you want to choose the wwwDir as your basePath (and it is chosen by default) to make your files publicly accessible.
-Relative path is relative to the basePath, so complete path where your files will be uploaded looks like this
+In most cases you want to choose the `wwwDir` as your `basePath` (and it is chosen by default) to make your files publicly accessible.
+`relativePath` is relative to the `basePath`, so complete path where your files will be uploaded looks like this
 
     {basePath}/{relativePath}[/{dir}]
 
-dir is an optional parameter and you can set during the runtime of your script in the listen() or upload() method.
+dir is an optional parameter and you can set it during the runtime of your script in the `listen()` or in the `upload()` method.
 
 **fileManager:**
 - blacklist
