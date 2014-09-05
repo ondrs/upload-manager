@@ -51,7 +51,7 @@ In most cases you want to choose the `wwwDir` as your `basePath` (and it is chos
 
     {basePath}/{relativePath}[/{dir}]
 
-dir is an optional parameter and you can set it during the runtime of your script in the `listen()` or in the `upload()` method.
+`dir` is an optional parameter and you can set it during the runtime of your script in the `listen()` or in the `upload()` method.
 
 **fileManager:**
 - blacklist
