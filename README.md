@@ -66,7 +66,7 @@ dir is an optional parameter and you can set during the runtime of your script i
 - dimensions
   - array of dimensions to which an image will be resized
   - format is
-  -  ```
+    ```
     PREFIX:
         - {X_SIZE, Y_SIZE}
         - RESIZE_OPTION
