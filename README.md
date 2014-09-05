@@ -66,18 +66,18 @@ dir is an optional parameter and you can set during the runtime of your script i
 - dimensions
   - array of dimensions to which an image will be resized
   - format is
-
-    PREFIX:
-        - {X_SIZE, Y_SIZE}
-        - RESIZE_OPTION
-
+```
+PREFIX:
+    - {X_SIZE, Y_SIZE}
+    - RESIZE_OPTION
+```
   - Y_SIZE is optional as well as RESIZE_OPTION
   - RESIZE_OPTION is set to Image::SHRINK_ONLY by default
 
 For example we will set the UploadManager according to the Full configuration which is written above.
 Uploading an image file *foo.jpg* with size (1680 x 1050) will result in creation of 5 files: foo.jpg, 800_foo.jpg, 500_.jpg, 250_foo.jpg, 100_foo.jpg
 All files are resized proportionally according to their X dimension. File foo.jpg is treaten like the original but it's resized to 1280px.
-All other files are saved with an prefix representing their X size in px.
+All other files are saved with a prefix representing their X size in px.
 
 
 Usage
@@ -106,7 +106,8 @@ Or if you want to upload a single file, for ex. by form, call directly the uploa
     }
 
 
-### Callbacks
+Callbacks
+-----
 
 - onQueueBegin
 - onQueueComplete
