@@ -15,7 +15,7 @@ use Nette\Utils\FileSystem;
 use Nette\Utils\Finder;
 use Nette\Utils\Image;
 
-class ImageManager extends Object implements IUpload
+class ImageManager extends Object implements IUploadManager
 {
 
     /** @var array */

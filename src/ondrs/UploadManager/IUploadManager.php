@@ -11,8 +11,18 @@ namespace ondrs\UploadManager;
 
 use Nette\Http\FileUpload;
 
-interface IUpload
+interface IUploadManager
 {
+
+    /**
+     * @return string
+     */
+    public function getRelativePath();
+
+    /**
+     * @return string
+     */
+    public function getBasePath();
 
     /**
      * @param FileUpload $fileUpload

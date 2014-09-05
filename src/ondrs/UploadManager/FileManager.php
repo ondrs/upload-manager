@@ -13,7 +13,7 @@ use Nette\Http\FileUpload;
 use Nette\Object;
 use Nette\Utils\FileSystem;
 
-class FileManager extends Object implements IUpload
+class FileManager extends Object implements IUploadManager
 {
 
     /** @var array */

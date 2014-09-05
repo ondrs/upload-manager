@@ -116,12 +116,15 @@ class Upload extends Object
      */
     public function upload(FileUpload $fileUpload, $dir = NULL)
     {
-        $usedManager = $fileUpload->isImage() ? 'imageManager' : 'fileManager';
-        $path = Utils::normalizePath($this->$usedManager->getRelativePath() . '/' . $dir);
+        $name = $fileUpload->isImage() ? 'imageManager' : 'fileManager';
+
+        /** @var IUploadManager $usedManager */
+        $usedManager = $this->$name;
+        $path = Utils::normalizePath($usedManager->getRelativePath() . '/' . $dir);
 
         $this->onFileBegin($fileUpload, $path);
 
-        $uploadedFile = $this->$usedManager->upload($fileUpload, $dir);
+        $uploadedFile = $usedManager->upload($fileUpload, $dir);
 
         $this->onFileComplete($fileUpload, $uploadedFile, $path);
 
