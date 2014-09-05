@@ -53,11 +53,10 @@ class Upload extends Object
 
 
     /**
-     *
+     * @param null|string $dir
      */
-    public function listen()
+    public function listen($dir = NULL)
     {
-        $dir = $this->httpRequest->getQuery('dir');
         $uploadedFiles = [];
 
         $this->onQueueBegin($this->httpRequest->getFiles(), $dir);
