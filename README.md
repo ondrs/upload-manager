@@ -71,6 +71,7 @@ dir is an optional parameter and you can set during the runtime of your script i
         - {X_SIZE, Y_SIZE}
         - RESIZE_OPTION
     ```
+
   - Y_SIZE is optional as well as RESIZE_OPTION
   - RESIZE_OPTION is set to Image::SHRINK_ONLY by default
 
