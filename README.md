@@ -42,7 +42,7 @@ Full configuration:
                 250:
                     - {250, NULL}
                     - shrink_only
-                100:
+                thumb:
                     - {100, NULL}
                     - shrink_only
 
@@ -51,7 +51,7 @@ Relative path is relative to the basePath, so complete path where your files wil
 
     {basePath}/{relativePath}[/{dir}]
 
-dir is an optional parameter and you can set during the runtime of your script in the listen or
+dir is an optional parameter and you can set during the runtime of your script in the listen() or upload() method.
 
 **fileManager:**
 - blacklist
@@ -72,19 +72,24 @@ dir is an optional parameter and you can set during the runtime of your script i
         - RESIZE_OPTION
     ```
 
-  - Y_SIZE is optional as well as RESIZE_OPTION
-  - RESIZE_OPTION is set to Image::SHRINK_ONLY by default
+  - `PREFIX` can be whatever you want, it will be added to a resized file: `PREFIX_file.jpg`
+  - `Y_SIZE` is optional as well as `RESIZE_OPTION`
+  - `RESIZE_OPTION` is set to `Image::SHRINK_ONLY` by default
 
 For example we will set the UploadManager according to the Full configuration which is written above.
-Uploading an image file *foo.jpg* with size (1680 x 1050) will result in creation of 5 files: *foo.jpg, 800_foo.jpg, 500_.jpg, 250_foo.jpg, 100_foo.jpg*
-All files are resized proportionally according to their X dimension. File foo.jpg is treaten like the original but it's resized to 1280px.
-All other files are saved with a prefix representing their X size in px.
+
+    $this->upload->listen('super/dir')
+
+Uploading an image file `foo.jpg` with size (1680 x 1050) will result in creation of 5 files: `foo.jpg, 800_foo.jpg, 500_.jpg, 250_foo.jpg, thumb_foo.jpg`
+which will be saved in the `%wwwDir%/uploads/super/dir`
+All files are resized proportionally according to their X dimension and saved with a corresponding prefix.
+File foo.jpg is considered to be an original but it's resized to 1280px.
 
 
 Usage
 -----
 
-Inject ondrs\UploadManager\Upload into your presenter or wherever you want
+Inject `ondrs\UploadManager\Upload` into your presenter or wherever you want
 
     /** @var \ondrs\UploadManager\Upload @inject
     private $upload;
@@ -96,7 +101,7 @@ And listen for an upload.
         $this->upload->listen('path/to/dir');
     }
 
-Or if you want to upload just a single file, for ex. by form, call directly the upload method
+If you want to upload just a single file, for example with a form, call directly the upload method
 
     public function processForm($form)
     {
