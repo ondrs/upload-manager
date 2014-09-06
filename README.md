@@ -120,13 +120,13 @@ The real fun comes up with an events. They are here to help you to control and m
 - onQueueBegin
   - called before the upload starts
   - accept one argument
-    1. array of Nette\Http\FileUpload of files which will be uploaded
+    1. array of Nette\Http\FileUpload objects which will be uploaded
 
 - onQueueComplete
   - called when the upload finish
   - accept two arguments
     1. array of Nette\Http\FileUpload
-    2. array of \SplFileInfo of files which were uploaded
+    2. array of \SplFileInfo objects which were uploaded
 
 - onFileBegin
   - called before the upload of *each file*
