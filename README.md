@@ -120,13 +120,13 @@ The real fun comes up with an events. They are here to help you to control and m
 - onQueueBegin
   - called before the upload starts
   - accept one argument
-    1. array of Nette\Http\FileUpload objects which will be uploaded
+    1. array of Nette\Http\FileUpload objects which *will be uploaded*
 
 - onQueueComplete
   - called when the upload finish
   - accept two arguments
     1. array of Nette\Http\FileUpload
-    2. array of \SplFileInfo objects which were uploaded
+    2. array of \SplFileInfo objects which *were uploaded*
 
 - onFileBegin
   - called before the upload of *each file*
@@ -137,8 +137,8 @@ The real fun comes up with an events. They are here to help you to control and m
 - onFileComplete
   - called after the upload complete of *each file*
   - accept three arguments
-    1. Nette\Http\FileUpload object of the original file
-    2. \SplFileInfo object of the uploaded file
+    1. Nette\Http\FileUpload object of the *original file*
+    2. \SplFileInfo object of the *uploaded file*
     3. dir which is constructed as `{relativePath}[/{dir}]`
 
 
@@ -146,19 +146,16 @@ Real world example
 -----
 
     /**
-     * @param int $caseId
      * @param int $eventId
-     * @param string $type
-     * @return array
      */
-    public function create($caseId, $eventId, $type = self::TYPE_FILE)
+    public function uploadAttachment($eventId)
     {
         /**
          * @param FileUpload $fileUpload
          * @param \SplFileInfo $uploadedFile
          * @param $path
          */
-        $this->upload->onFileComplete[] = function (FileUpload $fileUpload, \SplFileInfo $uploadedFile, $path) use ($caseId, $eventId, $type) {
+        $this->upload->onFileComplete[] = function (FileUpload $fileUpload, \SplFileInfo $uploadedFile, $path) use ($eventId) {
 
             $filename = $uploadedFile->getFilename();
 
@@ -166,9 +163,7 @@ Real world example
                 ->insert([
                     'filename' => $filename,
                     'path' => $path,
-                    'type' => $type,
                     'crm_events_id' => $eventId,
-                    'crm_cases_id' => $caseId,
                 ]);
         };
 
@@ -189,5 +184,5 @@ Real world example
                 ]);
         };
 
-        $this->upload->listen(self::RELATIVE_DIR . '/' .  $this->activeSession->getActiveBranchId() . '/' . $caseId);
+        $this->upload->listen('attachments/' . $eventId);
     }
