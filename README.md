@@ -78,7 +78,7 @@ In most cases you want to choose the `wwwDir` as your `basePath` (and it is chos
 
 For example we will set the UploadManager according to the Full configuration which is written above.
 
-    $this->upload->listen('super/dir')
+    $this->upload->listen('dir/path')
 
 Uploading an image file `foo.jpg` with size (1680 x 1050) will result in creation of 5 files: `foo.jpg, 800_foo.jpg, 500_.jpg, 250_foo.jpg, thumb_foo.jpg`
 which will be saved in the `%wwwDir%/uploads/super/dir`
@@ -92,7 +92,7 @@ Usage
 Inject `ondrs\UploadManager\Upload` into your presenter or wherever you want
 
     /** @var \ondrs\UploadManager\Upload @inject
-    private $upload;
+    public $upload;
 
 And listen for an upload.
 
@@ -112,12 +112,90 @@ If you want to upload just a single file, for example with a form, call directly
     }
 
 
-Callbacks
+Events
 -----
 
-- onQueueBegin
-- onQueueComplete
-- onFileBegin
-- onFileComplete
+The real fun comes with an events. They are here to help you to control and monitor your upload process with ease.
 
-TODO: callbacks
+- onQueueBegin
+  - called before the upload starts
+  - accept one argument
+    1. array of Nette\Http\FileUpload of files which will be uploaded
+
+- onQueueComplete
+  - called when the upload finish
+  - accept two arguments
+    1. array of Nette\Http\FileUpload
+    2. array of \SplFileInfo of files which were uploaded
+
+- onFileBegin
+  - called before the upload of *each file*
+  - accept two arguments
+    1. Nette\Http\FileUpload
+    2. dir which is constructed as `{relativePath}[/{dir}]`
+
+- onFileComplete
+  - called after the upload complete of *each file*
+  - accept three arguments
+    1. Nette\Http\FileUpload object of the original file
+    2. \SplFileInfo object of the uploaded file
+    3. dir which is constructed as `{relativePath}[/{dir}]`
+
+
+Real world example
+-----
+
+    /**
+     * @param int $caseId
+     * @param int $eventId
+     * @param string $type
+     * @return array
+     */
+    public function create($caseId, $eventId, $type = self::TYPE_FILE)
+    {
+        /**
+         * @param FileUpload $fileUpload
+         * @param \SplFileInfo $uploadedFile
+         * @param $path
+         */
+        $this->upload->onFileComplete[] = function (FileUpload $fileUpload, \SplFileInfo $uploadedFile, $path) use ($caseId, $eventId, $type) {
+
+            $filename = $uploadedFile->getFilename();
+
+            $this->db->table('crm_attachments')
+                ->insert([
+                    'filename' => $filename,
+                    'path' => $path,
+                    'type' => $type,
+                    'crm_events_id' => $eventId,
+                    'crm_cases_id' => $caseId,
+                ]);
+
+            $this->eventManager->dispatchEvent('crm_attachment_created', new EventArgsList([
+                'param_id' => $eventId,
+                'args' => [
+                    'filename' => $filename,
+                ],
+            ]));
+
+        };
+
+        /**
+         * @param array $files
+         * @param array $uploadedFiles
+         */
+        $this->upload->onQueueComplete[] = function(array $files, array $uploadedFiles) use($eventId) {
+
+            $uploadedFiles = array_map(function($i) {
+                return $i->getFilename();
+            }, $uploadedFiles);
+
+            $this->db->table('crm_events')
+                ->wherePrimary($eventId)
+                ->update([
+                    'text' => implode(';', $uploadedFiles),
+                ]);
+        };
+
+        $this->upload->listen(self::RELATIVE_DIR . '/' .  $this->activeSession->getActiveBranchId() . '/' . $caseId);
+    }
