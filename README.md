@@ -115,7 +115,7 @@ If you want to upload just a single file, for example with a form, call directly
 Events
 -----
 
-The real fun comes with an events. They are here to help you to control and monitor your upload process with ease.
+The real fun comes up with an events. They are here to help you to control and monitor your upload process with an ease.
 
 - onQueueBegin
   - called before the upload starts
@@ -170,14 +170,6 @@ Real world example
                     'crm_events_id' => $eventId,
                     'crm_cases_id' => $caseId,
                 ]);
-
-            $this->eventManager->dispatchEvent('crm_attachment_created', new EventArgsList([
-                'param_id' => $eventId,
-                'args' => [
-                    'filename' => $filename,
-                ],
-            ]));
-
         };
 
         /**
