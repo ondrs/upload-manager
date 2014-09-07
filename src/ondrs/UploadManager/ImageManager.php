@@ -184,6 +184,10 @@ class ImageManager extends Object implements IUploadManager
         $dir = $this->getBasePath() . '/' . $this->getRelativePath() . '/' . $dir;
         $dir = Utils::normalizePath($dir);
 
+        if(!is_dir($dir)) {
+            return;
+        }
+
         foreach (Finder::findFiles($filter)->in($dir) as $filePath => $file) {
             FileSystem::delete($filePath);
         }
