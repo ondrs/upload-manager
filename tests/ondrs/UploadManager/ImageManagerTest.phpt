@@ -92,7 +92,7 @@ class ImageManagerTest extends Tester\TestCase
 
         $orig = \Nette\Utils\Image::fromFile(TEMP_DIR . '/ImageManager/test-image-big.jpg');
 
-        Assert::true($orig->getWidth() === 1280);
+        Assert::true($orig->getWidth() === 1680);
     }
 
 
