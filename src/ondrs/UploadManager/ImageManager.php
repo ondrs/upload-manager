@@ -28,7 +28,7 @@ class ImageManager extends Object implements IUploadManager
     ];
 
     /** @var array */
-    private $maxSize = [1280, NULL];
+    private $maxSize = [1680, NULL];
 
     /** @var array */
     private $dimensions = [
