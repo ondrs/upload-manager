@@ -94,21 +94,21 @@ Inject `ondrs\UploadManager\Upload` into your presenter or wherever you want
     /** @var \ondrs\UploadManager\Upload @inject
     public $upload;
 
-And listen for an upload.
+And do an upload.
 
     public function renderUpload()
     {
-        $this->upload->listen('path/to/dir');
+        $this->upload->filesToDir('path/to/dir');
     }
 
-If you want to upload just a single file, for example with a form, call directly the upload method
+If you want to upload just a single file (for example with a form) call the `singleFileToDir()` method
 
     public function processForm($form)
     {
         /** @var Nette\Http\FileUpload */
         $fileUpload = $form->values->file;
 
-        $this->upload->upload($fileUpload, 'path/to/dir');
+        $this->upload->singleFileToDir($fileUpload, 'path/to/dir');
     }
 
 
@@ -184,5 +184,5 @@ Real world example
                 ]);
         };
 
-        $this->upload->listen('attachments/' . $eventId);
+        $this->upload->filesToDir('attachments/' . $eventId);
     }

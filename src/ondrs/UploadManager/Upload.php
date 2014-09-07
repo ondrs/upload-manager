@@ -87,7 +87,7 @@ class Upload extends Object
     /**
      *
      */
-    public function listen($dir = NULL)
+    public function filesToDir($dir = NULL)
     {
         $uploadedFiles = [];
 
@@ -97,11 +97,11 @@ class Upload extends Object
 
             if (is_array($file)) {
                 foreach ($file as $f) {
-                    $uploadedFiles[] = $this->upload($f, $dir);
+                    $uploadedFiles[] = $this->singleFileToDir($f, $dir);
                 }
 
             } else {
-                $uploadedFiles[] = $this->upload($file, $dir);
+                $uploadedFiles[] = $this->singleFileToDir($file, $dir);
             }
         }
 
@@ -114,7 +114,7 @@ class Upload extends Object
      * @param null $dir
      * @return \SplFileInfo
      */
-    public function upload(FileUpload $fileUpload, $dir = NULL)
+    public function singleFileToDir(FileUpload $fileUpload, $dir = NULL)
     {
         $name = $fileUpload->isImage() ? 'imageManager' : 'fileManager';
 

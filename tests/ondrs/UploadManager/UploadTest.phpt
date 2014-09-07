@@ -72,7 +72,7 @@ class UploadTest extends Tester\TestCase
             Assert::equal('test-image.jpg', $uploadedFile->getBasename());
         };
 
-        $this->upload->listen();
+        $this->upload->filesToDir();
 
         $this->imageManager->assertExpectations();
     }
@@ -119,7 +119,7 @@ class UploadTest extends Tester\TestCase
             Assert::equal('test-file.txt', $uploadedFile->getBasename());
         };
 
-        $this->upload->listen();
+        $this->upload->filesToDir();
 
         $this->fileManager->assertExpectations();
     }
@@ -144,7 +144,7 @@ class UploadTest extends Tester\TestCase
         $this->fileManager->expects('getRelativePath')
             ->andReturn('');
 
-        $splInfo = $this->upload->upload($fileUpload);
+        $splInfo = $this->upload->singleFileToDir($fileUpload);
 
         Assert::false($fileUpload->isImage());
         Assert::true($splInfo instanceof \SplFileInfo);
@@ -173,7 +173,7 @@ class UploadTest extends Tester\TestCase
         $this->imageManager->expects('getRelativePath')
             ->andReturn('');
 
-        $splInfo = $this->upload->upload($fileUpload);
+        $splInfo = $this->upload->singleFileToDir($fileUpload);
 
         Assert::true($fileUpload->isImage());
         Assert::true($splInfo instanceof \SplFileInfo);
