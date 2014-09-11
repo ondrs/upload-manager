@@ -35,8 +35,11 @@ class FileManagerTest extends Tester\TestCase
             'error' => 0
         ]);
 
-        Assert::true($this->fileManager->upload($fileUpload) instanceof \SplFileInfo);
-        Assert::true(file_exists(TEMP_DIR . '/FileManager/test-file.txt'));
+        $uploaded = $this->fileManager->upload($fileUpload);
+
+        Assert::true($uploaded instanceof \SplFileInfo);
+        Assert::equal('txt', $uploaded->getExtension());
+        Assert::true(file_exists(TEMP_DIR . '/FileManager/' . $uploaded->getFilename()));
     }
 
 
@@ -69,8 +72,11 @@ class FileManagerTest extends Tester\TestCase
             'error' => 0
         ]);
 
-        Assert::true($this->fileManager->upload($fileUpload) instanceof \SplFileInfo);
-        Assert::true(file_exists(TEMP_DIR . '/FileManager/test-image.jpg'));
+        $uploaded = $this->fileManager->upload($fileUpload);
+
+        Assert::true($uploaded instanceof \SplFileInfo);
+        Assert::equal('jpg', $uploaded->getExtension());
+        Assert::true(file_exists(TEMP_DIR . '/FileManager/' . $uploaded->getFilename()));
     }
 
 
@@ -93,6 +99,32 @@ class FileManagerTest extends Tester\TestCase
         Assert::exception(function () use ($fileUpload) {
             $this->fileManager->upload($fileUpload);
         }, 'ondrs\UploadManager\NotAllowedFileException');
+    }
+
+
+    function testUploadFileWithLongName()
+    {
+        $filePath = TEMP_DIR . '/' . \Nette\Utils\Random::generate(150) .  '.txt';
+
+        copy(__DIR__ . '/data/test-file.txt', $filePath);
+
+        $file = new \SplFileInfo($filePath);
+
+        $fileUpload = new \Nette\Http\FileUpload([
+            'name' => $file->getBasename(),
+            'type' => $file->getType(),
+            'size' => $file->getSize(),
+            'tmp_name' => $filePath,
+            'error' => 0
+        ]);
+
+        $uploaded = $this->fileManager->upload($fileUpload);
+        $filename = $uploaded->getFilename();
+
+        Assert::true($uploaded instanceof \SplFileInfo);
+        Assert::equal('txt', $uploaded->getExtension());
+
+        Assert::equal(64, \Nette\Utils\Strings::length($filename));
     }
 }
 

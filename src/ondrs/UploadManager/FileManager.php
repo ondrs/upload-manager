@@ -12,6 +12,7 @@ namespace ondrs\UploadManager;
 use Nette\Http\FileUpload;
 use Nette\Object;
 use Nette\Utils\FileSystem;
+use Nette\Utils\Strings;
 
 class FileManager extends Object implements IUploadManager
 {
@@ -93,14 +94,13 @@ class FileManager extends Object implements IUploadManager
         $path = Utils::normalizePath($path);
         Utils::makeDirectoryRecursive($path);
 
-        $filename = $fileUpload->getSanitizedName();
-        $filename = strtolower($filename);
+        $filename = Utils::sanitizeFileName($fileUpload);
 
-        $parts = explode('.', $filename);
-        $last = end($parts);
+        $fileInfo = new \SplFileInfo($filename);
+        $suffix = $fileInfo->getExtension();
 
-        if (in_array($last, $this->blacklist)) {
-            throw new NotAllowedFileException("Upload of the file with $last suffix is not allowed.");
+        if (in_array($suffix, $this->blacklist)) {
+            throw new NotAllowedFileException("Upload of the file with $suffix suffix is not allowed.");
         }
 
         $fileUpload->move($path . '/' . $filename);

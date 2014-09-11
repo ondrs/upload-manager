@@ -35,14 +35,19 @@ class ImageManagerTest extends Tester\TestCase
             'error' => 0
         ]);
 
-        Assert::true($this->imageManager->upload($fileUpload) instanceof \SplFileInfo);
-        Assert::true(file_exists(TEMP_DIR . '/ImageManager/test-image.jpg'));
-        Assert::true(file_exists(TEMP_DIR . '/ImageManager/800_test-image.jpg'));
-        Assert::true(file_exists(TEMP_DIR . '/ImageManager/250_test-image.jpg'));
+        $uploaded = $this->imageManager->upload($fileUpload);
+        $filename = $uploaded->getFilename();
+
+        Assert::true($uploaded instanceof \SplFileInfo);
+        Assert::equal('jpg', $uploaded->getExtension());
+
+        Assert::true(file_exists(TEMP_DIR . '/ImageManager/' . $filename));
+        Assert::true(file_exists(TEMP_DIR . '/ImageManager/800_' . $filename));
+        Assert::true(file_exists(TEMP_DIR . '/ImageManager/250_' . $filename));
 
         // bcs image is small and it shouldn't be resized
-        Assert::equal(md5_file(TEMP_DIR . '/ImageManager/test-image.jpg'), md5_file(TEMP_DIR . '/ImageManager/800_test-image.jpg'));
-        Assert::equal(md5_file(TEMP_DIR . '/ImageManager/250_test-image.jpg'), md5_file(TEMP_DIR . '/ImageManager/800_test-image.jpg'));
+        Assert::equal(md5_file(TEMP_DIR . '/ImageManager/' . $filename), md5_file(TEMP_DIR . '/ImageManager/800_' . $filename));
+        Assert::equal(md5_file(TEMP_DIR . '/ImageManager/250_' . $filename), md5_file(TEMP_DIR . '/ImageManager/800_' . $filename));
     }
 
 
@@ -84,15 +89,45 @@ class ImageManagerTest extends Tester\TestCase
             'error' => 0
         ]);
 
-        Assert::true($this->imageManager->upload($fileUpload) instanceof \SplFileInfo);
+        $uploaded = $this->imageManager->upload($fileUpload);
+        $filename = $uploaded->getFilename();
 
-        Assert::true(file_exists(TEMP_DIR . '/ImageManager/test-image-big.jpg'));
-        Assert::true(file_exists(TEMP_DIR . '/ImageManager/800_test-image-big.jpg'));
-        Assert::true(file_exists(TEMP_DIR . '/ImageManager/250_test-image-big.jpg'));
+        Assert::true($uploaded instanceof \SplFileInfo);
+        Assert::equal('jpg', $uploaded->getExtension());
 
-        $orig = \Nette\Utils\Image::fromFile(TEMP_DIR . '/ImageManager/test-image-big.jpg');
+        Assert::true(file_exists(TEMP_DIR . '/ImageManager/' . $filename));
+        Assert::true(file_exists(TEMP_DIR . '/ImageManager/800_' . $filename));
+        Assert::true(file_exists(TEMP_DIR . '/ImageManager/250_' . $filename));
+
+        $orig = \Nette\Utils\Image::fromFile(TEMP_DIR . '/ImageManager/' . $filename);
 
         Assert::true($orig->getWidth() === 1680);
+    }
+
+
+    function testUploadImageWithLongName()
+    {
+        $filePath = TEMP_DIR . '/' . \Nette\Utils\Random::generate(150) .  '.jpg';
+
+        copy(__DIR__ . '/data/test-image-big.jpg', $filePath);
+
+        $file = new \SplFileInfo($filePath);
+
+        $fileUpload = new \Nette\Http\FileUpload([
+            'name' => $file->getBasename(),
+            'type' => $file->getType(),
+            'size' => $file->getSize(),
+            'tmp_name' => $filePath,
+            'error' => 0
+        ]);
+
+        $uploaded = $this->imageManager->upload($fileUpload);
+        $filename = $uploaded->getFilename();
+
+        Assert::true($uploaded instanceof \SplFileInfo);
+        Assert::equal('jpg', $uploaded->getExtension());
+
+        Assert::equal(64, \Nette\Utils\Strings::length($filename));
     }
 
 

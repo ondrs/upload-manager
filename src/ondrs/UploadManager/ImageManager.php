@@ -14,6 +14,7 @@ use Nette\Object;
 use Nette\Utils\FileSystem;
 use Nette\Utils\Finder;
 use Nette\Utils\Image;
+use Nette\Utils\Strings;
 
 class ImageManager extends Object implements IUploadManager
 {
@@ -147,8 +148,7 @@ class ImageManager extends Object implements IUploadManager
         $path = Utils::normalizePath($path);
         Utils::makeDirectoryRecursive($path);
 
-        $filename = $fileUpload->getSanitizedName();
-        $filename = strtolower($filename);
+        $filename = Utils::sanitizeFileName($fileUpload);
 
         /** @var \Nette\Utils\Image */
         $image = $fileUpload->toImage();

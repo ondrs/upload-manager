@@ -9,6 +9,9 @@
 namespace ondrs\UploadManager;
 
 
+use Nette\Http\FileUpload;
+use Nette\Utils\Strings;
+
 class Utils
 {
 
@@ -20,6 +23,22 @@ class Utils
     {
         $path = preg_replace('~/+~', '/', $path);
         return rtrim($path, '/');
+    }
+
+
+    public static function sanitizeFileName(FileUpload $fileUpload)
+    {
+        $filename = $fileUpload->getSanitizedName();
+        $filename = Strings::lower($filename);
+
+        $fileInfo = new \SplFileInfo($filename);
+        $suffix = $fileInfo->getExtension();
+        $basename = $fileInfo->getBasename(".$suffix");
+
+        $hash = md5($fileUpload->getContents());
+        $hash = Strings::substring($hash, 0, 9);
+
+        return Strings::substring($basename, 0, 50) . "_$hash.$suffix";
     }
 
 
