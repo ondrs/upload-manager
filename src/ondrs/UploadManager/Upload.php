@@ -85,7 +85,8 @@ class Upload extends Object
 
 
     /**
-     *
+     * @param null|string $dir
+     * @return array
      */
     public function filesToDir($dir = NULL)
     {
@@ -106,12 +107,14 @@ class Upload extends Object
         }
 
         $this->onQueueComplete($this->httpRequest->getFiles(), $uploadedFiles);
+
+        return $uploadedFiles;
     }
 
 
     /**
      * @param FileUpload $fileUpload
-     * @param null $dir
+     * @param null|string $dir
      * @return \SplFileInfo
      */
     public function singleFileToDir(FileUpload $fileUpload, $dir = NULL)
