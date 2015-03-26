@@ -22,11 +22,14 @@ class ImageManager extends Object implements IUploadManager
     ];
 
     private static $types = [
-        'jpg' => Image::JPEG,
-        'jpeg' => Image::JPEG,
-        'png' => Image::PNG,
-        'gif' => Image::GIF,
+        self::TYPE_JPG => Image::JPEG,
+        self::TYPE_PNG => Image::PNG,
+        self::TYPE_GIF => Image::GIF,
     ];
+
+    const TYPE_JPG = 'jpg';
+    const TYPE_PNG = 'png';
+    const TYPE_GIF = 'gif';
 
     /** @var array */
     private $maxSize = [1680, NULL];
@@ -48,6 +51,9 @@ class ImageManager extends Object implements IUploadManager
 
     /** @var NULL|string */
     private $type = NULL;
+
+    /** @var NULL|string */
+    private $suffix = NULL;
 
     /** @var string */
     private $basePath;
@@ -176,8 +182,9 @@ class ImageManager extends Object implements IUploadManager
      */
     public function setType($type)
     {
-        if (in_array($type, self::$types)) {
-            $this->type = $type;
+        if (isset(self::$types[$type])) {
+            $this->type = self::$types[$type];
+            $this->suffix = $type;
         }
     }
 
@@ -205,10 +212,14 @@ class ImageManager extends Object implements IUploadManager
 
         $filename = Utils::sanitizeFileName($fileUpload);
 
+        if($this->type !== NULL) {
+            $filename = str_replace('.' . Utils::getSuffix($filename), '.' . $this->suffix, $filename);
+        }
+
         /** @var \Nette\Utils\Image */
         $image = $fileUpload->toImage();
         $image->resize($this->maxSize[0], $this->maxSize[1], Image::SHRINK_ONLY);
-        $image->save($path . '/' . $filename);
+        $image->save($path . '/' . $filename, $this->quality, $this->type);
 
 
         foreach ($this->dimensions as $prefix => $p) {

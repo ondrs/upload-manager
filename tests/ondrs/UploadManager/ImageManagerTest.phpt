@@ -1,6 +1,7 @@
 <?php
 
 
+use ondrs\UploadManager\ImageManager;
 use Tester\Assert;
 
 require_once __DIR__ . '/../../bootstrap.php';
@@ -9,13 +10,13 @@ require_once __DIR__ . '/../../bootstrap.php';
 class ImageManagerTest extends Tester\TestCase
 {
 
-    /** @var \ondrs\UploadManager\ImageManager */
+    /** @var ImageManager */
     private $imageManager;
 
 
     function setUp()
     {
-        $this->imageManager = new \ondrs\UploadManager\ImageManager(TEMP_DIR, 'ImageManager');
+        $this->imageManager = new ImageManager(TEMP_DIR, 'ImageManager');
     }
 
 
@@ -128,6 +129,92 @@ class ImageManagerTest extends Tester\TestCase
         Assert::equal('jpg', $uploaded->getExtension());
 
         Assert::equal(64, \Nette\Utils\Strings::length($filename));
+    }
+
+
+    function testPngImageConvertToJpg()
+    {
+        $filePath = TEMP_DIR . '/focus.png';
+
+        copy(__DIR__ . '/data/focus.png', $filePath);
+
+        $file = new \SplFileInfo($filePath);
+
+        $fileUpload = new \Nette\Http\FileUpload([
+            'name' => $file->getBasename(),
+            'type' => $file->getType(),
+            'size' => $file->getSize(),
+            'tmp_name' => $filePath,
+            'error' => 0
+        ]);
+
+        $this->imageManager->setType(ImageManager::TYPE_JPG);
+
+        $uploaded = $this->imageManager->upload($fileUpload);
+        $filename = $uploaded->getFilename();
+
+        Assert::true($uploaded instanceof \SplFileInfo);
+        Assert::equal(ImageManager::TYPE_JPG, $uploaded->getExtension());
+
+        Assert::true(file_exists(TEMP_DIR . '/ImageManager/' . $filename));
+        Assert::true(file_exists(TEMP_DIR . '/ImageManager/800_' . $filename));
+        Assert::true(file_exists(TEMP_DIR . '/ImageManager/250_' . $filename));
+    }
+
+
+    function testLowerImageQuality()
+    {
+        $filePath = TEMP_DIR . '/test-image.jpg';
+
+        copy(__DIR__ . '/data/test-image.jpg', $filePath);
+
+        $file = new \SplFileInfo($filePath);
+
+        $fileUpload = new \Nette\Http\FileUpload([
+            'name' => $file->getBasename(),
+            'type' => $file->getType(),
+            'size' => $file->getSize(),
+            'tmp_name' => $filePath,
+            'error' => 0
+        ]);
+
+        $uploaded = $this->imageManager->upload($fileUpload);
+        $filename = $uploaded->getFilename();
+
+        $firstFile = TEMP_DIR . '/ImageManager/' . $filename;
+
+        Assert::true(file_exists($firstFile));
+
+
+
+
+        $filePath = TEMP_DIR . '/test-image2.jpg';
+
+        copy(__DIR__ . '/data/test-image.jpg', $filePath);
+
+        $file = new \SplFileInfo($filePath);
+
+        $fileUpload = new \Nette\Http\FileUpload([
+            'name' => $file->getBasename(),
+            'type' => $file->getType(),
+            'size' => $file->getSize(),
+            'tmp_name' => $filePath,
+            'error' => 0
+        ]);
+
+
+        $this->imageManager->setQuality(50);
+
+        $uploaded = $this->imageManager->upload($fileUpload);
+        $filename = $uploaded->getFilename();
+
+        $secondFile = TEMP_DIR . '/ImageManager/' . $filename;
+
+        Assert::true(file_exists($secondFile));
+
+
+        Assert::true(filesize($secondFile) < filesize($firstFile));
+
     }
 
 
