@@ -32,6 +32,8 @@ Full configuration:
             blackList: {php}
         imageManager:
             maxSize: 1280
+            type: jpg
+            quality: 80
             dimensions:
                 800:
                     - {800, NULL}
