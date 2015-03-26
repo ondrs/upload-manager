@@ -20,6 +20,8 @@ class Extension extends CompilerExtension
             'relativePath' => NULL,
             'dimensions' => NULL,
             'maxSize' => NULL,
+            'quality' => NULL,
+            'type' => NULL,
         ],
         'fileManager' => [
             'basePath' => NULL,
@@ -44,6 +46,8 @@ class Extension extends CompilerExtension
                 $config['imageManager']['relativePath'] ? $config['imageManager']['relativePath'] : $config['relativePath'],
                 $config['imageManager']['dimensions'],
                 $config['imageManager']['maxSize'],
+                $config['imageManager']['quality'],
+                $config['imageManager']['type'],
             ]);
 
         $builder->addDefinition($this->prefix('fileManager'))
