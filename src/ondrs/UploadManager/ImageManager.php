@@ -8,18 +8,24 @@ use Nette\Object;
 use Nette\Utils\FileSystem;
 use Nette\Utils\Finder;
 use Nette\Utils\Image;
-use Nette\Utils\Strings;
 
 class ImageManager extends Object implements IUploadManager
 {
 
     /** @var array */
-    private static $method = [
+    private static $methods = [
         'exact' => Image::EXACT,
         'fill' => Image::FILL,
         'fit' => Image::FIT,
         'shrink_only' => Image::SHRINK_ONLY,
         'stretch' => Image::STRETCH,
+    ];
+
+    private static $types = [
+        'jpg' => Image::JPEG,
+        'jpeg' => Image::JPEG,
+        'png' => Image::PNG,
+        'gif' => Image::GIF,
     ];
 
     /** @var array */
@@ -37,6 +43,12 @@ class ImageManager extends Object implements IUploadManager
         ]
     ];
 
+    /** @var NULL|int */
+    private $quality = NULL;
+
+    /** @var NULL|string */
+    private $type = NULL;
+
     /** @var string */
     private $basePath;
 
@@ -49,9 +61,11 @@ class ImageManager extends Object implements IUploadManager
      * @param $relativePath
      * @param null|array $dimensions
      * @param null|array|string $maxSize
+     * @param null|int $quality
+     * @param null|string $type
      * @throws InvalidArgumentException
      */
-    public function __construct($basePath, $relativePath, $dimensions = NULL, $maxSize = NULL)
+    public function __construct($basePath, $relativePath, $dimensions = NULL, $maxSize = NULL, $quality = NULL, $type = NULL)
     {
         $this->basePath = $basePath;
         $this->relativePath = $relativePath;
@@ -63,6 +77,12 @@ class ImageManager extends Object implements IUploadManager
         if ($maxSize !== NULL) {
             $this->setMaxSize($maxSize);
         }
+
+        $this->quality = $quality;
+
+        if($type !== NULL) {
+            $this->setType($type);
+        }
     }
 
     /**
@@ -72,8 +92,8 @@ class ImageManager extends Object implements IUploadManager
     {
         $this->dimensions = array_map(function ($i) {
 
-            $i[1] = isset($i[1]) && isset(self::$method[$i[1]])
-                ? self::$method[$i[1]]
+            $i[1] = isset($i[1]) && isset(self::$methods[$i[1]])
+                ? self::$methods[$i[1]]
                 : Image::SHRINK_ONLY;
 
             return $i;
@@ -120,6 +140,27 @@ class ImageManager extends Object implements IUploadManager
         return $this->maxSize;
     }
 
+    /**
+     * @return NULL|string
+     */
+    public function getType()
+    {
+        return $this->type;
+    }
+
+    /**
+     * @param $type
+     * @return NULL|string
+     */
+    public function setType($type)
+    {
+        if(in_array(self::$types, $type)) {
+            $this->type = $type;
+        }
+
+        return $this->type;
+    }
+
 
     /**
      * @param FileUpload $fileUpload
@@ -129,7 +170,7 @@ class ImageManager extends Object implements IUploadManager
      */
     public function upload(FileUpload $fileUpload, $dir = NULL)
     {
-        if(!$fileUpload->isImage()) {
+        if (!$fileUpload->isImage()) {
             throw new InvalidArgumentException('This is not an image!');
         }
 
@@ -153,7 +194,7 @@ class ImageManager extends Object implements IUploadManager
         foreach ($this->dimensions as $prefix => $p) {
 
             $image->resize($p[0][0], $p[0][1], $p[1]);
-            $image->save($path . '/' . $prefix . '_' . $filename);
+            $image->save($path . '/' . $prefix . '_' . $filename, $this->quality, $this->type);
         }
 
         return new \SplFileInfo($filename);
@@ -178,7 +219,7 @@ class ImageManager extends Object implements IUploadManager
         $dir = $this->getBasePath() . '/' . $this->getRelativePath() . '/' . $dir;
         $dir = Utils::normalizePath($dir);
 
-        if(!is_dir($dir)) {
+        if (!is_dir($dir)) {
             return;
         }
 
