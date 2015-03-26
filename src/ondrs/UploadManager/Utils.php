@@ -20,6 +20,18 @@ class Utils
     }
 
 
+    /**
+     * @param $filename
+     * @return string
+     */
+    public static function getSuffix($filename)
+    {
+        $fileInfo = new \SplFileInfo($filename);
+
+        return $fileInfo->getExtension();
+    }
+
+
     public static function sanitizeFileName(FileUpload $fileUpload)
     {
         $filename = $fileUpload->getSanitizedName();
