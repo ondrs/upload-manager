@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Ondra
- * Date: 8.8.14
- * Time: 19:10
- */
 
 namespace ondrs\UploadManager;
 
