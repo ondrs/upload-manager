@@ -78,9 +78,11 @@ class ImageManager extends Object implements IUploadManager
             $this->setMaxSize($maxSize);
         }
 
-        $this->quality = $quality;
+        if ($quality !== NULL) {
+            $this->quality = $quality;
+        }
 
-        if($type !== NULL) {
+        if ($type !== NULL) {
             $this->setType($type);
         }
     }
@@ -141,6 +143,26 @@ class ImageManager extends Object implements IUploadManager
     }
 
     /**
+     * @return int|NULL
+     */
+    public function getQuality()
+    {
+        return $this->quality;
+    }
+
+    /**
+     * @param $quality
+     * @return int|NULL
+     */
+    public function setQuality($quality)
+    {
+        if ($quality >= 0 && $quality <= 100) {
+            $this->quality = $quality;
+        }
+    }
+
+
+    /**
      * @return NULL|string
      */
     public function getType()
@@ -154,11 +176,9 @@ class ImageManager extends Object implements IUploadManager
      */
     public function setType($type)
     {
-        if(in_array($type, self::$types)) {
+        if (in_array($type, self::$types)) {
             $this->type = $type;
         }
-
-        return $this->type;
     }
 
 
