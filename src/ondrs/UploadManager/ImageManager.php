@@ -212,12 +212,15 @@ class ImageManager extends Object implements IUploadManager
 
         $filename = Utils::sanitizeFileName($fileUpload);
 
+        /** @var \Nette\Utils\Image */
+        $image = $fileUpload->toImage();
+        $image->save($path . '/orig_' . $filename);
+
         if($this->type !== NULL) {
             $filename = str_replace('.' . Utils::getSuffix($filename), '.' . $this->suffix, $filename);
         }
 
-        /** @var \Nette\Utils\Image */
-        $image = $fileUpload->toImage();
+
         $image->resize($this->maxSize[0], $this->maxSize[1], Image::SHRINK_ONLY);
         $image->save($path . '/' . $filename, $this->quality, $this->type);
 
