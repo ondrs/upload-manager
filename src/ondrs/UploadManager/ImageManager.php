@@ -154,7 +154,7 @@ class ImageManager extends Object implements IUploadManager
      */
     public function setType($type)
     {
-        if(in_array(self::$types, $type)) {
+        if(in_array($type, self::$types)) {
             $this->type = $type;
         }
 
