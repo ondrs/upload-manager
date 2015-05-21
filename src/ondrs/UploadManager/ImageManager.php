@@ -8,6 +8,7 @@ use Nette\Object;
 use Nette\Utils\FileSystem;
 use Nette\Utils\Finder;
 use Nette\Utils\Image;
+use SplFileInfo;
 
 class ImageManager extends Object implements IUploadManager
 {
@@ -21,6 +22,7 @@ class ImageManager extends Object implements IUploadManager
         'stretch' => Image::STRETCH,
     ];
 
+    /** @var array */
     private static $types = [
         self::TYPE_JPG => Image::JPEG,
         self::TYPE_PNG => Image::PNG,
@@ -63,13 +65,12 @@ class ImageManager extends Object implements IUploadManager
 
 
     /**
-     * @param $basePath
-     * @param $relativePath
+     * @param string $basePath
+     * @param string $relativePath
      * @param null|array $dimensions
      * @param null|array|string $maxSize
      * @param null|int $quality
      * @param null|string $type
-     * @throws InvalidArgumentException
      */
     public function __construct($basePath, $relativePath, $dimensions = NULL, $maxSize = NULL, $quality = NULL, $type = NULL)
     {
@@ -157,7 +158,7 @@ class ImageManager extends Object implements IUploadManager
     }
 
     /**
-     * @param $quality
+     * @param int $quality
      * @return int|NULL
      */
     public function setQuality($quality)
@@ -177,7 +178,7 @@ class ImageManager extends Object implements IUploadManager
     }
 
     /**
-     * @param $type
+     * @param string $type
      * @return NULL|string
      */
     public function setType($type)
@@ -191,8 +192,8 @@ class ImageManager extends Object implements IUploadManager
 
     /**
      * @param FileUpload $fileUpload
-     * @param null $dir
-     * @return \SplFileInfo
+     * @param NULL|string $dir
+     * @return SplFileInfo
      * @throws InvalidArgumentException
      */
     public function upload(FileUpload $fileUpload, $dir = NULL)
@@ -231,14 +232,14 @@ class ImageManager extends Object implements IUploadManager
             $image->save($path . '/' . $prefix . '_' . $filename, $this->quality, $this->type);
         }
 
-        return new \SplFileInfo($filename);
+        return new SplFileInfo($filename);
     }
 
 
     /**
-     * @param $dir
-     * @param $filename
-     * @return mixed|void
+     * @param string $dir
+     * @param string $filename
+     * @return void
      */
     public function delete($dir, $filename)
     {

@@ -20,16 +20,16 @@ interface IUploadManager
 
     /**
      * @param FileUpload $fileUpload
-     * @param null|string $dir
+     * @param NULL|string $dir
      * @return \SplFileInfo
      */
     public function upload(FileUpload $fileUpload, $dir = NULL);
 
 
     /**
-     * @param $dir
-     * @param $filename
-     * @return mixed
+     * @param string $dir
+     * @param string $filename
+     * @return void
      */
     public function delete($dir, $filename);
 

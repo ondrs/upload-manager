@@ -6,6 +6,7 @@ namespace ondrs\UploadManager;
 use Nette\Http\FileUpload;
 use Nette\Http\Request;
 use Nette\Object;
+use SplFileInfo;
 
 
 class Upload extends Object
@@ -14,10 +15,10 @@ class Upload extends Object
     /** @var Request */
     private $httpRequest;
 
-    /** @var \ondrs\UploadManager\ImageManager */
+    /** @var ImageManager */
     private $imageManager;
 
-    /** @var \ondrs\UploadManager\FileManager */
+    /** @var FileManager */
     private $fileManager;
 
     /** @var array */
@@ -46,7 +47,7 @@ class Upload extends Object
     }
 
     /**
-     * @param \ondrs\UploadManager\FileManager $fileManager
+     * @param FileManager $fileManager
      */
     public function setFileManager($fileManager)
     {
@@ -54,7 +55,7 @@ class Upload extends Object
     }
 
     /**
-     * @return \ondrs\UploadManager\FileManager
+     * @return FileManager
      */
     public function getFileManager()
     {
@@ -62,7 +63,7 @@ class Upload extends Object
     }
 
     /**
-     * @param \ondrs\UploadManager\ImageManager $imageManager
+     * @param ImageManager $imageManager
      */
     public function setImageManager($imageManager)
     {
@@ -70,7 +71,7 @@ class Upload extends Object
     }
 
     /**
-     * @return \ondrs\UploadManager\ImageManager
+     * @return ImageManager
      */
     public function getImageManager()
     {
@@ -79,7 +80,7 @@ class Upload extends Object
 
 
     /**
-     * @param null|string $dir
+     * @param NULL|string $dir
      * @return array
      */
     public function filesToDir($dir = NULL)
@@ -91,6 +92,7 @@ class Upload extends Object
         foreach ($this->httpRequest->getFiles() as $file) {
 
             if (is_array($file)) {
+
                 foreach ($file as $f) {
                     $uploadedFiles[] = $this->singleFileToDir($f, $dir);
                 }
@@ -108,8 +110,8 @@ class Upload extends Object
 
     /**
      * @param FileUpload $fileUpload
-     * @param null|string $dir
-     * @return \SplFileInfo
+     * @param NULL|string $dir
+     * @return SplFileInfo
      */
     public function singleFileToDir(FileUpload $fileUpload, $dir = NULL)
     {

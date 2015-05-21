@@ -6,7 +6,7 @@ namespace ondrs\UploadManager;
 use Nette\Http\FileUpload;
 use Nette\Object;
 use Nette\Utils\FileSystem;
-use Nette\Utils\Strings;
+use SplFileInfo;
 
 class FileManager extends Object implements IUploadManager
 {
@@ -24,8 +24,8 @@ class FileManager extends Object implements IUploadManager
 
 
     /**
-     * @param $basePath
-     * @param $relativePath
+     * @param string $basePath
+     * @param string $relativePath
      * @param null|array|string $blacklist
      */
     public function __construct($basePath, $relativePath, $blacklist = NULL)
@@ -73,8 +73,8 @@ class FileManager extends Object implements IUploadManager
 
     /**
      * @param FileUpload $fileUpload
-     * @param null|string $dir
-     * @return \SplFileInfo
+     * @param NULL|string $dir
+     * @return SplFileInfo
      * @throws NotAllowedFileException
      */
     public function upload(FileUpload $fileUpload, $dir = NULL)
@@ -90,7 +90,7 @@ class FileManager extends Object implements IUploadManager
 
         $filename = Utils::sanitizeFileName($fileUpload);
 
-        $fileInfo = new \SplFileInfo($filename);
+        $fileInfo = new SplFileInfo($filename);
         $suffix = $fileInfo->getExtension();
 
         if (in_array($suffix, $this->blacklist)) {
@@ -99,7 +99,7 @@ class FileManager extends Object implements IUploadManager
 
         $fileUpload->move($path . '/' . $filename);
 
-        return new \SplFileInfo($filename);
+        return new SplFileInfo($filename);
     }
 
 

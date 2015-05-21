@@ -10,7 +10,7 @@ class Utils
 {
 
     /**
-     * @param $path
+     * @param string $path
      * @return string
      */
     public static function normalizePath($path)
@@ -21,7 +21,7 @@ class Utils
 
 
     /**
-     * @param $filename
+     * @param string $filename
      * @return string
      */
     public static function getSuffix($filename)
@@ -32,6 +32,10 @@ class Utils
     }
 
 
+    /**
+     * @param FileUpload $fileUpload
+     * @return string
+     */
     public static function sanitizeFileName(FileUpload $fileUpload)
     {
         $filename = $fileUpload->getSanitizedName();
