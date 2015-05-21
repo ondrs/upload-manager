@@ -217,7 +217,7 @@ class ImageManager extends Object implements IUploadManager
         $image = $fileUpload->toImage();
         $image->save($path . '/orig_' . $filename);
 
-        if($this->type !== NULL) {
+        if ($this->type !== NULL) {
             $filename = str_replace('.' . Utils::getSuffix($filename), '.' . $this->suffix, $filename);
         }
 

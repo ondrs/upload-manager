@@ -59,7 +59,7 @@ class Utils
     {
         $dir = self::normalizePath($dir);
 
-        if(is_dir($dir)) {
+        if (is_dir($dir)) {
             return;
         }
 
