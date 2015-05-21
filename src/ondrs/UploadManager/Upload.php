@@ -21,16 +21,16 @@ class Upload extends Object
     private $fileManager;
 
     /** @var array */
-    public $onQueueBegin;
+    public $onQueueBegin = [];
 
     /** @var array */
-    public $onQueueComplete;
+    public $onQueueComplete = [];
 
     /** @var array */
-    public $onFileBegin;
+    public $onFileBegin = [];
 
     /** @var array */
-    public $onFileComplete;
+    public $onFileComplete = [];
 
 
     /**
