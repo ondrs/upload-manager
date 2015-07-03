@@ -227,9 +227,9 @@ class ImageManager extends Object implements IUploadManager
 
 
         foreach ($this->dimensions as $prefix => $p) {
-
-            $image->resize($p[0][0], $p[0][1], $p[1]);
-            $image->save($path . '/' . $prefix . '_' . $filename, $this->quality, $this->type);
+            $tmp_image = clone $image;
+            $tmp_image->resize($p[0][0], $p[0][1], $p[1]);
+            $tmp_image->save($path . '/' . $prefix . '_' . $filename, $this->quality, $this->type);
         }
 
         return new SplFileInfo($filename);
