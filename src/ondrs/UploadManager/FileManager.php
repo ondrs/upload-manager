@@ -99,7 +99,7 @@ class FileManager extends Object implements IUploadManager
 
         $fileUpload->move($path . '/' . $filename);
 
-        return new SplFileInfo($filename);
+        return new SplFileInfo($path . '/' . $filename);
     }
 
 
