@@ -232,7 +232,7 @@ class ImageManager extends Object implements IUploadManager
             $image->save($path . '/' . $prefix . '_' . $filename, $this->quality, $this->type);
         }
 
-        return new SplFileInfo($filename);
+        return new SplFileInfo($path . '/' . $filename);
     }
 
 
