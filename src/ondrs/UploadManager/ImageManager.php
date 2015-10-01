@@ -235,13 +235,10 @@ class ImageManager extends Object implements IUploadManager
             $filename = str_replace('.' . Utils::getSuffix($filename), '.' . $this->suffix, $filename);
         }
 
-
         $image->resize($this->maxSize[0], $this->maxSize[1], Image::SHRINK_ONLY);
         $image->save($path . '/' . $filename, $this->quality, $this->type);
 
-
         foreach ($this->dimensions as $prefix => $p) {
-
             $image->resize($p[0][0], $p[0][1], $p[1]);
             $image->save($path . '/' . $prefix . '_' . $filename, $this->quality, $this->type);
         }
