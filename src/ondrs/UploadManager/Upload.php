@@ -84,7 +84,7 @@ class Upload extends Object
 
     /**
      * @param NULL|string $dir
-     * @return array
+     * @return SplFileInfo[]
      */
     public function filesToDir($dir = NULL)
     {
