@@ -57,6 +57,9 @@ class ImageManager extends Object implements IUploadManager
     /** @var NULL|string */
     private $suffix = NULL;
 
+    /** @var bool */
+    private $saveOriginal = FALSE;
+
     /** @var string */
     private $basePath;
 
@@ -170,6 +173,14 @@ class ImageManager extends Object implements IUploadManager
 
 
     /**
+     * @param bool $yes
+     */
+    public function saveOriginal($yes = TRUE)
+    {
+        $this->saveOriginal = (bool) $yes;
+    }
+
+    /**
      * @return NULL|string
      */
     public function getType()
@@ -215,7 +226,10 @@ class ImageManager extends Object implements IUploadManager
 
         /** @var \Nette\Utils\Image */
         $image = $fileUpload->toImage();
-        $image->save($path . '/orig_' . $filename);
+
+        if ($this->saveOriginal) {
+            $image->save($path . '/orig_' . $filename);
+        }
 
         if ($this->type !== NULL) {
             $filename = str_replace('.' . Utils::getSuffix($filename), '.' . $this->suffix, $filename);

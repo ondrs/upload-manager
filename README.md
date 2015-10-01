@@ -34,6 +34,7 @@ Full configuration:
             maxSize: 1280
             type: jpg
             quality: 80
+            saveOriginal: FALSE
             dimensions:
                 800:
                     - {800, NULL}

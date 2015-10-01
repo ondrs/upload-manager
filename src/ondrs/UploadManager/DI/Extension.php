@@ -50,6 +50,12 @@ class Extension extends CompilerExtension
                 $config['imageManager']['type'],
             ]);
 
+        if (isset($config['imageManager']['saveOriginal'])) {
+            $builder->getDefinition($this->prefix('imageManager'))
+                ->addSetup('saveOriginal', [$config['imageManager']['saveOriginal']]);
+        }
+
+
         $builder->addDefinition($this->prefix('fileManager'))
             ->setClass('ondrs\UploadManager\FileManager', [
                 $config['fileManager']['basePath'] ? $config['fileManager']['basePath'] : $config['basePath'],
