@@ -45,6 +45,7 @@ class ImageManagerTest extends Tester\TestCase
         Assert::true(file_exists(TEMP_DIR . '/ImageManager/' . $filename));
         Assert::true(file_exists(TEMP_DIR . '/ImageManager/800_' . $filename));
         Assert::true(file_exists(TEMP_DIR . '/ImageManager/250_' . $filename));
+        Assert::false(file_exists(TEMP_DIR . '/ImageManager/orig_' . $filename));
 
         // bcs image is small and it shouldn't be resized
         Assert::equal(md5_file(TEMP_DIR . '/ImageManager/' . $filename), md5_file(TEMP_DIR . '/ImageManager/800_' . $filename));
@@ -99,6 +100,7 @@ class ImageManagerTest extends Tester\TestCase
         Assert::true(file_exists(TEMP_DIR . '/ImageManager/' . $filename));
         Assert::true(file_exists(TEMP_DIR . '/ImageManager/800_' . $filename));
         Assert::true(file_exists(TEMP_DIR . '/ImageManager/250_' . $filename));
+        Assert::false(file_exists(TEMP_DIR . '/ImageManager/orig_' . $filename));
 
         $orig = \Nette\Utils\Image::fromFile(TEMP_DIR . '/ImageManager/' . $filename);
 
