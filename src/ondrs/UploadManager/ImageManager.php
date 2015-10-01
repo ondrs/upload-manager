@@ -177,7 +177,7 @@ class ImageManager extends Object implements IUploadManager
      */
     public function saveOriginal($yes = TRUE)
     {
-        $this->saveOriginal = (bool) $yes;
+        $this->saveOriginal = (bool)$yes;
     }
 
     /**
@@ -258,6 +258,10 @@ class ImageManager extends Object implements IUploadManager
     public function delete($dir, $filename)
     {
         $filter = array_keys($this->dimensions);
+
+        if ($this->saveOriginal) {
+            $filter[] = 'orig';
+        }
 
         $filter = array_map(function ($i) use ($filename) {
             return $i . '_' . $filename;
