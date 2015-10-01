@@ -33,6 +33,9 @@ class Upload extends Object
     /** @var array */
     public $onFileComplete = [];
 
+    /** @var array */
+    public $onError = [];
+
 
     /**
      * @param ImageManager $imageManager
@@ -94,11 +97,19 @@ class Upload extends Object
             if (is_array($file)) {
 
                 foreach ($file as $f) {
-                    $uploadedFiles[] = $this->singleFileToDir($f, $dir);
+                    try {
+                        $uploadedFiles[] = $this->singleFileToDir($f, $dir);
+                    } catch (UploadErrorException $e) {
+                        $this->onError($f, $e);
+                    }
                 }
 
             } else {
-                $uploadedFiles[] = $this->singleFileToDir($file, $dir);
+                try {
+                    $uploadedFiles[] = $this->singleFileToDir($file, $dir);
+                } catch (UploadErrorException $e) {
+                    $this->onError($file, $e);
+                }
             }
         }
 
@@ -112,9 +123,14 @@ class Upload extends Object
      * @param FileUpload $fileUpload
      * @param NULL|string $dir
      * @return SplFileInfo
+     * @throws UploadErrorException
      */
     public function singleFileToDir(FileUpload $fileUpload, $dir = NULL)
     {
+        if ($error = $fileUpload->getError()) {
+            throw new UploadErrorException($error);
+        }
+
         $name = $fileUpload->isImage() ? 'imageManager' : 'fileManager';
 
         /** @var IUploadManager $usedManager */
