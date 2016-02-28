@@ -79,4 +79,26 @@ class Utils
         }
     }
 
+
+    /**
+     * @param string $filename
+     * @return FileUpload
+     */
+    public static function fileUploadFromFile($filename)
+    {
+        if (!file_exists($filename)) {
+            throw new FileNotExistsException("File '$filename' does not exists");
+        }
+
+        $file = new \SplFileInfo($filename);
+
+        return new FileUpload([
+            'name' => $file->getBasename(),
+            'type' => $file->getType(),
+            'size' => $file->getSize(),
+            'tmp_name' => $filename,
+            'error' => 0
+        ]);
+    }
+
 } 

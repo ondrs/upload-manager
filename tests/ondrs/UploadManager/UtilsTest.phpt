@@ -1,6 +1,7 @@
 <?php
 
 
+use ondrs\UploadManager\Utils;
 use Tester\Assert;
 
 require_once __DIR__ . '/../../bootstrap.php';
@@ -12,7 +13,7 @@ class UtilsTest extends Tester\TestCase
 
     function testNormalizePath()
     {
-        Assert::same('/aaa/aaaa/vvv', \ondrs\UploadManager\Utils::normalizePath('/////aaa/aaaa//vvv/////'));
+        Assert::same('/aaa/aaaa/vvv', Utils::normalizePath('/////aaa/aaaa//vvv/////'));
     }
 
 
@@ -20,7 +21,7 @@ class UtilsTest extends Tester\TestCase
     {
         $dir = TEMP_DIR . '/a/b/c/d/e';
         Assert::false(is_dir($dir));
-        \ondrs\UploadManager\Utils::makeDirectoryRecursive($dir);
+        Utils::makeDirectoryRecursive($dir);
         Assert::true(is_dir($dir));
     }
 
@@ -39,7 +40,7 @@ class UtilsTest extends Tester\TestCase
             'error' => 0
         ]);
 
-        $filename = \ondrs\UploadManager\Utils::sanitizeFileName($fileUpload);
+        $filename = Utils::sanitizeFileName($fileUpload);
 
         Assert::equal(64, \Nette\Utils\Strings::length($filename));
         Assert::equal('php', $fileInfo->getExtension());
@@ -60,7 +61,7 @@ class UtilsTest extends Tester\TestCase
             'error' => 0
         ]);
 
-        $filename = \ondrs\UploadManager\Utils::sanitizeFileName($fileUpload);
+        $filename = Utils::sanitizeFileName($fileUpload);
 
         Assert::equal(65, \Nette\Utils\Strings::length($filename));
         Assert::equal('html', $fileInfo->getExtension());
@@ -81,10 +82,26 @@ class UtilsTest extends Tester\TestCase
             'error' => 0
         ]);
 
-        $filename = \ondrs\UploadManager\Utils::sanitizeFileName($fileUpload);
+        $filename = Utils::sanitizeFileName($fileUpload);
 
         Assert::equal(24, \Nette\Utils\Strings::length($filename));
         Assert::equal('txt', $fileInfo->getExtension());
+    }
+
+
+    function testFileUploadFromFileException()
+    {
+        Assert::exception(function() {
+            Utils::fileUploadFromFile('aaa.bbb');
+        }, '\ondrs\UploadManager\FileNotExistsException');
+    }
+
+
+    function testFileUploadFromFile()
+    {
+        $fileUpload = Utils::fileUploadFromFile(__DIR__ . '/data/focus.png');
+        Assert::type('\Nette\Http\FileUpload', $fileUpload);
+        Assert::true($fileUpload->isImage());
     }
 
 

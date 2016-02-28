@@ -43,6 +43,12 @@ class InvalidArgumentException extends \InvalidArgumentException
 }
 
 
+class FileNotExistsException extends InvalidArgumentException
+{
+
+}
+
+
 class NotAllowedFileException extends Exception
 {
 
