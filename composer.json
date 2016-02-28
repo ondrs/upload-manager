@@ -14,16 +14,16 @@
   ],
   "require": {
     "php": ">=5.4.0",
-    "nette/bootstrap": ">=2.2.0",
-    "nette/di": ">=2.2.0",
-    "nette/finder": ">=2.2.0",
-    "nette/http": ">=2.2.0",
-    "nette/neon": ">=2.2.0",
-    "nette/utils":">=2.2.0"
+    "nette/bootstrap": "~2.3.0",
+    "nette/di": "~2.3.0",
+    "nette/finder": "~2.3.0",
+    "nette/http": "~2.3.0",
+    "nette/neon": "~2.3.0",
+    "nette/utils":"~2.3.0"
   },
   "require-dev": {
-    "nette/tester": "@dev",
-    "janmarek/mockista": "dev-master",
+    "nette/tester": "~1.7.0",
+    "janmarek/mockista": "~1.1.0",
     "jakub-onderka/php-parallel-lint": "0.*"
   },
   "autoload": {
