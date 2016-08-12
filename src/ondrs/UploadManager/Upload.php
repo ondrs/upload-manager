@@ -2,24 +2,20 @@
 
 namespace ondrs\UploadManager;
 
-
 use Nette\Http\FileUpload;
-use Nette\Http\Request;
+use Nette\Http\IRequest;
 use Nette\Object;
+use ondrs\UploadManager\Managers\IManager;
 use SplFileInfo;
-
 
 class Upload extends Object
 {
 
-    /** @var Request */
+    /** @var IRequest */
     private $httpRequest;
 
-    /** @var ImageManager */
-    private $imageManager;
-
-    /** @var FileManager */
-    private $fileManager;
+    /** @var ManagerProvider */
+    private $managerProvider;
 
     /** @var array */
     public $onQueueBegin = [];
@@ -37,56 +33,18 @@ class Upload extends Object
     public $onError = [];
 
 
-    /**
-     * @param ImageManager $imageManager
-     * @param FileManager $fileManager
-     * @param Request $request
-     */
-    public function __construct(ImageManager $imageManager, FileManager $fileManager, Request $request)
+    public function __construct(IRequest $request, ManagerProvider $managerProvider)
     {
-        $this->imageManager = $imageManager;
-        $this->fileManager = $fileManager;
         $this->httpRequest = $request;
-    }
-
-    /**
-     * @param FileManager $fileManager
-     */
-    public function setFileManager($fileManager)
-    {
-        $this->fileManager = $fileManager;
-    }
-
-    /**
-     * @return FileManager
-     */
-    public function getFileManager()
-    {
-        return $this->fileManager;
-    }
-
-    /**
-     * @param ImageManager $imageManager
-     */
-    public function setImageManager($imageManager)
-    {
-        $this->imageManager = $imageManager;
-    }
-
-    /**
-     * @return ImageManager
-     */
-    public function getImageManager()
-    {
-        return $this->imageManager;
+        $this->managerProvider = $managerProvider;
     }
 
 
     /**
-     * @param NULL|string $dir
+     * @param string $namespace
      * @return SplFileInfo[]
      */
-    public function filesToDir($dir = NULL)
+    public function filesToDir($namespace)
     {
         $uploadedFiles = [];
 
@@ -98,7 +56,7 @@ class Upload extends Object
 
                 foreach ($file as $f) {
                     try {
-                        $uploadedFiles[] = $this->singleFileToDir($f, $dir);
+                        $uploadedFiles[] = $this->singleFileToDir($namespace, $f);
                     } catch (UploadErrorException $e) {
                         $this->onError($f, $e);
                     }
@@ -106,7 +64,7 @@ class Upload extends Object
 
             } else {
                 try {
-                    $uploadedFiles[] = $this->singleFileToDir($file, $dir);
+                    $uploadedFiles[] = $this->singleFileToDir($namespace, $file);
                 } catch (UploadErrorException $e) {
                     $this->onError($file, $e);
                 }
@@ -120,31 +78,29 @@ class Upload extends Object
 
 
     /**
+     * @param string $namespace
      * @param FileUpload $fileUpload
-     * @param NULL|string $dir
      * @return SplFileInfo
      * @throws UploadErrorException
      */
-    public function singleFileToDir(FileUpload $fileUpload, $dir = NULL)
+    public function singleFileToDir($namespace, FileUpload $fileUpload)
     {
         if ($error = $fileUpload->getError()) {
             throw new UploadErrorException($error);
         }
 
-        $name = $fileUpload->isImage() ? 'imageManager' : 'fileManager';
+        /** @var IManager $manager */
+        $manager = $this->managerProvider->get($fileUpload);
 
-        /** @var IUploadManager $usedManager */
-        $usedManager = $this->$name;
-        $path = Utils::normalizePath($usedManager->getRelativePath() . '/' . $dir);
+        $relativePath = Utils::normalizePath($manager->getStorage()->getRelativePath() . '/' . $namespace);
 
-        $this->onFileBegin($fileUpload, $path);
+        $this->onFileBegin($fileUpload, $relativePath);
 
-        $uploadedFile = $usedManager->upload($fileUpload, $dir);
+        $uploadedFile = $manager->upload($namespace, $fileUpload);
 
-        $this->onFileComplete($fileUpload, $uploadedFile, $path);
+        $this->onFileComplete($uploadedFile, $fileUpload, $relativePath);
 
         return $uploadedFile;
     }
-
 
 } 

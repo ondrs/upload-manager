@@ -1,16 +1,17 @@
 <?php
 
-namespace ondrs\UploadManager;
-
+namespace ondrs\UploadManager\Managers;
 
 use Nette\Http\FileUpload;
 use Nette\Object;
 use Nette\Utils\FileSystem;
-use Nette\Utils\Finder;
 use Nette\Utils\Image;
+use ondrs\UploadManager\InvalidArgumentException;
+use ondrs\UploadManager\Storages\IStorage;
+use ondrs\UploadManager\Utils;
 use SplFileInfo;
 
-class ImageManager extends Object implements IUploadManager
+class ImageManager extends Object implements IManager
 {
 
     /** @var array */
@@ -32,6 +33,12 @@ class ImageManager extends Object implements IUploadManager
     const TYPE_JPG = 'jpg';
     const TYPE_PNG = 'png';
     const TYPE_GIF = 'gif';
+
+    /** @var IStorage */
+    private $storage;
+
+    /** @var string */
+    private $tempDir;
 
     /** @var array */
     private $maxSize = [1680, NULL];
@@ -60,27 +67,21 @@ class ImageManager extends Object implements IUploadManager
     /** @var bool */
     private $saveOriginal = FALSE;
 
-    /** @var string */
-    private $basePath;
-
-    /** @var string */
-    private $relativePath;
-
 
     /**
-     * @param string $basePath
-     * @param string $relativePath
-     * @param null|array $dimensions
-     * @param null|array|string $maxSize
-     * @param null|int $quality
-     * @param null|string $type
+     * @param IStorage $storage
+     * @param string $tempDir
+     * @param array $dimensions
+     * @param NULL|array|int $maxSize
+     * @param NULL|int $quality
+     * @param NULL|string $type
      */
-    public function __construct($basePath, $relativePath, $dimensions = NULL, $maxSize = NULL, $quality = NULL, $type = NULL)
+    public function __construct(IStorage $storage, $tempDir, array $dimensions = [], $maxSize = NULL, $quality = NULL, $type = NULL)
     {
-        $this->basePath = $basePath;
-        $this->relativePath = $relativePath;
+        $this->storage = $storage;
+        $this->tempDir = $tempDir . '/' . uniqid('ImageManager');
 
-        if ($dimensions !== NULL) {
+        if (count($dimensions)) {
             $this->setDimensions($dimensions);
         }
 
@@ -113,22 +114,6 @@ class ImageManager extends Object implements IUploadManager
     }
 
     /**
-     * @return string
-     */
-    public function getBasePath()
-    {
-        return $this->basePath;
-    }
-
-    /**
-     * @return string
-     */
-    public function getRelativePath()
-    {
-        return $this->relativePath;
-    }
-
-    /**
      * @return array
      */
     public function getDimensions()
@@ -137,7 +122,7 @@ class ImageManager extends Object implements IUploadManager
     }
 
     /**
-     * @param array|string $maxSize
+     * @param array|int $maxSize
      */
     public function setMaxSize($maxSize)
     {
@@ -200,27 +185,38 @@ class ImageManager extends Object implements IUploadManager
         }
     }
 
+    /**
+     * @return string
+     */
+    public function getTempDir()
+    {
+        return $this->tempDir;
+    }
+
 
     /**
-     * @param FileUpload $fileUpload
-     * @param NULL|string $dir
-     * @return SplFileInfo
-     * @throws InvalidArgumentException
+     * @return IStorage
      */
-    public function upload(FileUpload $fileUpload, $dir = NULL)
+    public function getStorage()
+    {
+        return $this->storage;
+    }
+
+
+    /**
+     * @param string $namespace
+     * @param FileUpload $fileUpload
+     * @return SplFileInfo
+     */
+    public function upload($namespace, FileUpload $fileUpload)
     {
         if (!$fileUpload->isImage()) {
             throw new InvalidArgumentException('This is not an image!');
         }
 
-        $path = $this->basePath . '/' . $this->relativePath;
-
-        if ($dir !== NULL) {
-            $path .= '/' . $dir;
+        if (!is_dir($this->tempDir)) {
+            Utils::makeDirectoryRecursive($this->tempDir);
         }
-
-        $path = Utils::normalizePath($path);
-        Utils::makeDirectoryRecursive($path);
 
         $filename = Utils::sanitizeFileName($fileUpload);
 
@@ -228,7 +224,12 @@ class ImageManager extends Object implements IUploadManager
         $image = $fileUpload->toImage();
 
         if ($this->saveOriginal) {
-            $image->save($path . '/orig_' . $filename);
+            $image->save($this->tempDir . '/orig_' . $filename);
+
+            $savedOriginal = [
+                "$this->tempDir/orig_$filename",
+                "$namespace/orig_$filename",
+            ];
         }
 
         if ($this->type !== NULL) {
@@ -236,23 +237,55 @@ class ImageManager extends Object implements IUploadManager
         }
 
         $image->resize($this->maxSize[0], $this->maxSize[1], Image::SHRINK_ONLY);
-        $image->save($path . '/' . $filename, $this->quality, $this->type);
+        $image->save("$this->tempDir/$filename", $this->quality, $this->type);
+
+        $filesToSave = [];
+
+        // has to be first
+        $filesToSave[] = [
+            "$this->tempDir/$filename",
+            "$namespace/$filename",
+        ];
+
+        // intently saved at the second position
+        if (isset($savedOriginal)) {
+            $filesToSave[] = $savedOriginal;
+        }
 
         foreach ($this->dimensions as $prefix => $p) {
             $image->resize($p[0][0], $p[0][1], $p[1]);
-            $image->save($path . '/' . $prefix . '_' . $filename, $this->quality, $this->type);
+            $image->save("$this->tempDir/{$prefix}_{$filename}", $this->quality, $this->type);
+
+            $filesToSave[] = [
+                "$this->tempDir/{$prefix}_{$filename}",
+                "$namespace/{$prefix}_{$filename}",
+            ];
         }
 
-        return new SplFileInfo($path . '/' . $filename);
+        $results = $this->storage->bulkSave($filesToSave);
+
+        // cleanup temp files
+        foreach ($filesToSave as $file) {
+            if (is_file($file[0])) {
+                FileSystem::delete($file[0]);
+            }
+        }
+
+        // remove complete directory
+        if (is_dir($this->tempDir)) {
+            FileSystem::delete($this->tempDir);
+        }
+
+        return new SplFileInfo($results[0]);
     }
 
 
     /**
-     * @param string $dir
+     * @param string $namespace
      * @param string $filename
      * @return void
      */
-    public function delete($dir, $filename)
+    public function delete($namespace, $filename)
     {
         $filter = array_keys($this->dimensions);
 
@@ -266,15 +299,7 @@ class ImageManager extends Object implements IUploadManager
 
         $filter[] = $filename;
 
-        $dir = $this->getBasePath() . '/' . $this->getRelativePath() . '/' . $dir;
-        $dir = Utils::normalizePath($dir);
-
-        if (!is_dir($dir)) {
-            return;
-        }
-
-        foreach (Finder::findFiles($filter)->in($dir) as $filePath => $file) {
-            FileSystem::delete($filePath);
-        }
+        $files = array_keys($this->storage->find($namespace, $filter));
+        $this->storage->bulkDelete($files);
     }
 }

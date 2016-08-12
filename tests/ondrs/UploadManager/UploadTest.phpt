@@ -10,14 +10,17 @@ require_once __DIR__ . '/../../bootstrap.php';
 class UploadTest extends Tester\TestCase
 {
 
-    /** @var  \Mockista\Mock */
-    private $imageManager;
-
-    /** @var  \Mockista\Mock */
-    private $fileManager;
-
-    /** @var  \Mockista\Mock */
+    /** @var  \Mockery\MockInterface */
     private $httpRequest;
+
+    /** @var  \Mockery\MockInterface */
+    private $managerProvider;
+
+    /** @var  \Mockery\MockInterface */
+    private $manager;
+
+    /** @var  \Mockery\MockInterface */
+    private $storage;
 
     /** @var Upload */
     private $upload;
@@ -25,163 +28,48 @@ class UploadTest extends Tester\TestCase
 
     function setUp()
     {
-        $file = new \SplFileInfo(__DIR__ . '/data/test-file.txt');
-        $image = new \SplFileInfo(__DIR__ . '/data/test-image.jpg');
+        $this->httpRequest = Mockery::mock(\Nette\Http\IRequest::class);
+        $this->managerProvider = Mockery::mock(\ondrs\UploadManager\ManagerProvider::class);
+        $this->manager = Mockery::mock(\ondrs\UploadManager\Managers\IManager::class);
+        $this->storage = Mockery::mock(\ondrs\UploadManager\Storages\IStorage::class);
 
-        $this->fileManager = \Mockista\mock('ondrs\UploadManager\FileManager');
-        $this->fileManager->expects('upload')
-            ->andReturn($file);
-
-        $this->imageManager = \Mockista\mock('ondrs\UploadManager\ImageManager');
-        $this->imageManager->expects('upload')
-            ->andReturn($image);
-
-        $this->httpRequest = \Mockista\mock('Nette\Http\Request');
-        $this->httpRequest->expects('getQuery')
-            ->andReturn(NULL);
-
-        $this->upload = new Upload($this->imageManager, $this->fileManager, $this->httpRequest);
+        $this->upload = new Upload($this->httpRequest, $this->managerProvider);
     }
 
 
-    function testListenOnImagesUpload()
+    function testSingleFileToDir()
     {
-        $filePath = TEMP_DIR . '/test-image.jpg';
+        $this->managerProvider->shouldReceive('get')
+            ->andReturn($this->manager);
 
-        copy(__DIR__ . '/data/test-image.jpg', $filePath);
+        $this->storage->shouldReceive('getRelativePath')
+            ->andReturn('relativePath');
 
-        $file = new \SplFileInfo($filePath);
+        $this->manager->shouldReceive('getStorage')
+            ->andReturn($this->storage);
 
-        $fileUpload = new \Nette\Http\FileUpload([
-            'name' => $file->getBasename(),
-            'type' => $file->getType(),
-            'size' => $file->getSize(),
-            'tmp_name' => $filePath,
-            'error' => 0
-        ]);
+        $fileUpload = \ondrs\UploadManager\Utils::fileUploadFromFile(__DIR__ . '/data/focus.png');
 
-        $this->httpRequest->expects('getFiles')
-            ->andReturn([$fileUpload, $fileUpload]);
+        $this->manager->shouldReceive('upload')
+            ->with('namespace', $fileUpload)
+            ->andReturn(new SplFileInfo(__DIR__ . '/data/focus.png'));
 
-        $this->imageManager->expects('getRelativePath')
-            ->andReturn('');
-
-        $this->upload->onFileComplete[] = function (\Nette\Http\FileUpload $upload, \SplFileInfo $uploadedFile, $dir) use ($fileUpload) {
-            Assert::same($fileUpload, $upload);
-            Assert::true($fileUpload->isImage());
-            Assert::equal('test-image.jpg', $uploadedFile->getBasename());
+        $this->upload->onFileBegin[] = function(\Nette\Http\FileUpload $fileUpload, $relativePath) {
+            Assert::same('focus.png', $fileUpload->getName());
+            Assert::same('relativePath/namespace', $relativePath);
         };
 
-        $this->upload->filesToDir();
+        $this->upload->onFileComplete[] = function(SplFileInfo $uploadedFile, \Nette\Http\FileUpload $fileUpload, $relativePath) {
+            Assert::same('focus.png', $uploadedFile->getBasename());
+            Assert::same('focus.png', $fileUpload->getName());
+            Assert::same('relativePath/namespace', $relativePath);
+        };
 
-        $this->imageManager->assertExpectations();
+        $uploadedFile = $this->upload->singleFileToDir('namespace', $fileUpload);
+
+        Assert::type(SplFileInfo::class, $uploadedFile);
+        Assert::same('focus.png', $uploadedFile->getBasename());
     }
-
-
-    function testListenOnFileUpload()
-    {
-        $filePath = TEMP_DIR . '/test-file.txt';
-
-        copy(__DIR__ . '/data/test-file.txt', $filePath);
-
-        $file = new \SplFileInfo($filePath);
-
-        $fileUpload = new \Nette\Http\FileUpload([
-            'name' => $file->getBasename(),
-            'type' => $file->getType(),
-            'size' => $file->getSize(),
-            'tmp_name' => $filePath,
-            'error' => 0
-        ]);
-
-        $this->httpRequest->expects('getFiles')
-            ->andReturn([$fileUpload, $fileUpload]);
-
-        $this->fileManager->expects('getRelativePath')
-            ->andReturn('');
-
-        $this->upload->onQueueBegin[] = function(array $files) {
-            Assert::count(2, $files);
-        };
-
-        $this->upload->onQueueComplete[] = function(array $files, array $uploaded) {
-            Assert::count(2, $files);
-            Assert::count(2, $uploaded);
-        };
-
-        $this->upload->onFileBegin[] = function (\Nette\Http\FileUpload $upload, $dir) use ($fileUpload) {
-            Assert::same($fileUpload, $upload);
-        };
-
-        $this->upload->onFileComplete[] = function (\Nette\Http\FileUpload $upload, \SplFileInfo $uploadedFile, $dir) use ($fileUpload) {
-            Assert::same($fileUpload, $upload);
-            Assert::false($fileUpload->isImage());
-            Assert::equal('test-file.txt', $uploadedFile->getBasename());
-        };
-
-        $this->upload->filesToDir();
-
-        $this->fileManager->assertExpectations();
-    }
-
-
-    function testUploadSingleFile()
-    {
-        $filePath = TEMP_DIR . '/test-file.txt';
-
-        copy(__DIR__ . '/data/test-file.txt', $filePath);
-
-        $file = new \SplFileInfo($filePath);
-
-        $fileUpload = new \Nette\Http\FileUpload([
-            'name' => $file->getBasename(),
-            'type' => $file->getType(),
-            'size' => $file->getSize(),
-            'tmp_name' => $filePath,
-            'error' => 0
-        ]);
-
-        $this->fileManager->expects('getRelativePath')
-            ->andReturn('');
-
-        $splInfo = $this->upload->singleFileToDir($fileUpload);
-
-        Assert::false($fileUpload->isImage());
-        Assert::true($splInfo instanceof \SplFileInfo);
-        Assert::same('test-file.txt', $splInfo ->getBasename());
-
-        $this->fileManager->assertExpectations();
-    }
-
-
-    function testUploadSingleImage()
-    {
-        $filePath = TEMP_DIR . '/test-image.jpg';
-
-        copy(__DIR__ . '/data/test-image.jpg', $filePath);
-
-        $file = new \SplFileInfo($filePath);
-
-        $fileUpload = new \Nette\Http\FileUpload([
-            'name' => $file->getBasename(),
-            'type' => $file->getType(),
-            'size' => $file->getSize(),
-            'tmp_name' => $filePath,
-            'error' => 0
-        ]);
-
-        $this->imageManager->expects('getRelativePath')
-            ->andReturn('');
-
-        $splInfo = $this->upload->singleFileToDir($fileUpload);
-
-        Assert::true($fileUpload->isImage());
-        Assert::true($splInfo instanceof \SplFileInfo);
-        Assert::same('test-image.jpg', $splInfo ->getBasename());
-
-        $this->fileManager->assertExpectations();
-    }
-
 
 }
 
