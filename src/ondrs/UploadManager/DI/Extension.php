@@ -2,31 +2,33 @@
 
 namespace ondrs\UploadManager\DI;
 
-
 use Nette\Configurator;
 use Nette\DI\Compiler;
 use Nette\DI\CompilerExtension;
 use ondrs\UploadManager\Exception;
+use ondrs\UploadManager\ManagerContainer;
+use ondrs\UploadManager\ManagerProvider;
+use ondrs\UploadManager\Managers\FileManager;
+use ondrs\UploadManager\Managers\ImageManager;
+use ondrs\UploadManager\Storages\FileStorage;
+use ondrs\UploadManager\Upload;
 
 class Extension extends CompilerExtension
 {
 
     /** @var array */
     private $defaults = [
+        'tempDir' => '%tempDir%',
         'basePath' => '%wwwDir%',
         'relativePath' => NULL,
         'imageManager' => [
-            'basePath' => NULL,
-            'relativePath' => NULL,
             'dimensions' => NULL,
             'maxSize' => NULL,
             'quality' => NULL,
             'type' => NULL,
         ],
         'fileManager' => [
-            'basePath' => NULL,
-            'relativePath' => NULL,
-            'blacklist' => NULL,
+            'blacklist' => [],
         ],
     ];
 
@@ -40,10 +42,22 @@ class Extension extends CompilerExtension
             throw new Exception('relativePath must be set');
         }
 
+        $builder->addDefinition($this->prefix('storage'))
+            ->setClass(FileStorage::class, [
+                $config['basePath'],
+                $config['relativePath'],
+            ]);
+
+        $builder->addDefinition($this->prefix('managerProvider'))
+            ->setClass(ManagerProvider::class);
+
+        $builder->addDefinition($this->prefix('managerContainer'))
+            ->setClass(ManagerContainer::class);
+
         $builder->addDefinition($this->prefix('imageManager'))
-            ->setClass('ondrs\UploadManager\ImageManager', [
-                $config['imageManager']['basePath'] ? $config['imageManager']['basePath'] : $config['basePath'],
-                $config['imageManager']['relativePath'] ? $config['imageManager']['relativePath'] : $config['relativePath'],
+            ->setClass(ImageManager::class, [
+                $builder->getDefinition($this->prefix('storage')),
+                $config['tempDir'],
                 $config['imageManager']['dimensions'],
                 $config['imageManager']['maxSize'],
                 $config['imageManager']['quality'],
@@ -55,20 +69,14 @@ class Extension extends CompilerExtension
                 ->addSetup('saveOriginal', [$config['imageManager']['saveOriginal']]);
         }
 
-
         $builder->addDefinition($this->prefix('fileManager'))
-            ->setClass('ondrs\UploadManager\FileManager', [
-                $config['fileManager']['basePath'] ? $config['fileManager']['basePath'] : $config['basePath'],
-                $config['fileManager']['relativePath'] ? $config['fileManager']['relativePath'] : $config['relativePath'],
+            ->setClass(FileManager::class, [
+                $builder->getDefinition($this->prefix('storage')),
                 $config['fileManager']['blacklist'],
             ]);
 
         $builder->addDefinition($this->prefix('upload'))
-            ->setClass('ondrs\UploadManager\Upload', [
-                $builder->getDefinition($this->prefix('imageManager')),
-                $builder->getDefinition($this->prefix('fileManager')),
-            ]);
-
+            ->setClass(Upload::class);
     }
 
 
