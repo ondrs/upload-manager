@@ -111,7 +111,7 @@ If you want to upload just a single file (for example with a form) call the `sin
         /** @var Nette\Http\FileUpload */
         $fileUpload = $form->values->file;
 
-        $this->upload->singleFileToDir($fileUpload, 'path/to/dir');
+        $this->upload->singleFileToDir('path/to/dir', $fileUpload);
     }
 
 
@@ -158,7 +158,7 @@ Real world example
          * @param \SplFileInfo $uploadedFile
          * @param $path
          */
-        $this->upload->onFileComplete[] = function (FileUpload $fileUpload, \SplFileInfo $uploadedFile, $path) use ($eventId) {
+        $this->upload->onFileComplete[] = function (\SplFileInfo $uploadedFile, FileUpload $fileUpload, $path) use ($eventId) {
 
             $filename = $uploadedFile->getFilename();
 
