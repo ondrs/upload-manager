@@ -51,13 +51,20 @@ class ImageManagerTest extends Tester\TestCase
     function testDelete()
     {
         $variants = ['800_image.jpg', '250_image.jpg', 'image.jpg'];
+        $returnDelete = [];
+        $returnFind = [];
+
+        foreach ($variants as $variant) {
+            $returnDelete[] = "namespace/$variant";
+            $returnFind[$variant] = new SplFileInfo($variant);
+        }
 
         $this->storage->shouldReceive('find')
             ->with('namespace', $variants)
-            ->andReturn(array_combine($variants, $variants))
+            ->andReturn($returnFind)
             ->getMock()
             ->shouldReceive('bulkDelete')
-            ->with($variants);
+            ->with($returnDelete);
 
         $this->imageManager->delete('namespace', 'image.jpg');
     }
