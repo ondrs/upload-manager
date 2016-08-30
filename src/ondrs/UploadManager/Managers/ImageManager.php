@@ -299,7 +299,13 @@ class ImageManager extends Object implements IManager
 
         $filter[] = $filename;
 
-        $files = array_keys($this->storage->find($namespace, $filter));
+        $files = [];
+
+        /** @var SplFileInfo $file */
+        foreach ($this->storage->find($namespace, $filter) as $file) {
+            $files[] = Utils::normalizePath($namespace . '/' . $file->getFilename());
+        }
+
         $this->storage->bulkDelete($files);
     }
 }
