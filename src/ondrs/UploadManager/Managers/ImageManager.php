@@ -293,13 +293,12 @@ class ImageManager extends Object implements IManager
             $filter[] = 'orig';
         }
 
-        $filter = array_map(function ($i) use ($filename) {
-            return $i . '_' . $filename;
+        $filter = array_map(function ($i) use ($filename, $namespace) {
+            return $namespace . '/' . $i . '_' . $filename;
         }, $filter);
 
-        $filter[] = $filename;
+        $filter[] = $namespace . '/' . $filename;
 
-        $files = array_keys($this->storage->find($namespace, $filter));
-        $this->storage->bulkDelete($files);
+        $this->storage->bulkDelete($filter);
     }
 }
