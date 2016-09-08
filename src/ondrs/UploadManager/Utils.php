@@ -70,7 +70,7 @@ class Utils
 
             $path .= $subDir;
 
-            if (!is_dir($path)) {
+            if (!@is_dir($path)) {
                 @mkdir($path);
                 @chmod($path, 0777);
             }
