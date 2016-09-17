@@ -106,7 +106,7 @@ class FileStorage implements IStorage
      */
     public function find($namespace, $filter)
     {
-        $dir = Utils::normalizePath($this->getBasePath() . '/' . $this->getRelativePath() . '/' . $namespace);
+        $dir = Utils::normalizePath($this->basePath . '/' . $this->relativePath . '/' . $namespace);
 
         if (!is_dir($dir)) {
             return [];

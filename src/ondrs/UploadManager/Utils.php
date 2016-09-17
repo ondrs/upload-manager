@@ -2,7 +2,6 @@
 
 namespace ondrs\UploadManager;
 
-
 use Nette\Http\FileUpload;
 use Nette\Utils\Strings;
 

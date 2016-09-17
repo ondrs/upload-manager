@@ -5,7 +5,6 @@ namespace ondrs\UploadManager\Storages;
 use Aws\Result;
 use Aws\S3\S3Client;
 use GuzzleHttp\Promise;
-use Nette\Utils\Finder;
 use ondrs\UploadManager\Utils;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
