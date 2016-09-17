@@ -98,9 +98,6 @@ class S3Storage implements IStorage
             $promises[] = $this->s3Upload($file[0], $file[1]);
         }
 
-        // @see
-        // https://github.com/guzzle/guzzle/issues/1539
-        // https://github.com/guzzle/guzzle/pull/1577
         $results = Promise\all($promises)->wait();
 
         return array_map(function (Result $result) {
