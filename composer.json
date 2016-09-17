@@ -19,7 +19,8 @@
     "nette/finder": "~2.3.0",
     "nette/http": "~2.3.0",
     "nette/neon": "~2.3.0",
-    "nette/utils":"~2.3.0"
+    "nette/utils":"~2.3.0",
+    "aws/aws-sdk-php": "^3.19"
   },
   "require-dev": {
     "nette/tester": "~1.7.0",
