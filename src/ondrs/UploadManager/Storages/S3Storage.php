@@ -29,8 +29,8 @@ class S3Storage implements IStorage
      */
     public function __construct($basePath, $relativePath, S3Client $s3Client)
     {
-        $this->basePath = $basePath;
-        $this->relativePath = $relativePath;
+        $this->basePath = rtrim($basePath, '/');
+        $this->relativePath = rtrim(ltrim($relativePath, '/'), '/');
         $this->s3Client = $s3Client;
     }
 
