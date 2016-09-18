@@ -81,6 +81,8 @@ class S3Storage implements IStorage
         /** @var Result $result */
         $result = $this->s3Upload($source, $destination)->wait();
 
+        gc_collect_cycles();
+
         return $result->toArray()['ObjectURL'];
     }
 
@@ -98,6 +100,8 @@ class S3Storage implements IStorage
         }
 
         $results = Promise\all($promises)->wait();
+
+        gc_collect_cycles();
 
         return array_map(function (Result $result) {
             return $result->toArray()['ObjectURL'];
