@@ -179,25 +179,19 @@ class S3Storage implements IStorage
      */
     public function find($namespace, $filter)
     {
-        $this->s3Client->registerStreamWrapper();
-
-        $dir = 's3://' . Utils::normalizePath($this->basePath . '/' . $this->relativePath . '/' . $namespace);
-
-        if (!is_dir($dir)) {
-            return [];
-
-        }
-
         $pattern = self::buildPattern($filter);
 
-        $iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($dir));
+        $iterator = $this->s3Client->getIterator('ListObjects', [
+            'Bucket' => $this->basePath,
+            'Prefix' => Utils::normalizePath($this->relativePath . '/' . $namespace),
+        ]);
+
         $results = [];
 
-        foreach ($iterator as $file) {
-            if (!$pattern || preg_match($pattern, '/' . strtr($file, '\\', '/'))) {
-
-                $file = new \SplFileInfo(str_replace('\\', '/', $file));
-                $results[(string)$file] = $file;
+        foreach ($iterator as $object) {
+            if (!$pattern || preg_match($pattern, '/' . strtr($object['Key'], '\\', '/'))) {
+                $url = $this->s3Client->getObjectUrl($this->basePath, $object['Key']);
+                $results[$url] = new \SplFileInfo($url);
             }
         }
 
