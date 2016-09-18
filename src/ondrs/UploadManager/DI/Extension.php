@@ -2,6 +2,7 @@
 
 namespace ondrs\UploadManager\DI;
 
+use Aws\S3\S3Client;
 use Nette\Configurator;
 use Nette\DI\Compiler;
 use Nette\DI\CompilerExtension;
@@ -11,6 +12,7 @@ use ondrs\UploadManager\ManagerProvider;
 use ondrs\UploadManager\Managers\FileManager;
 use ondrs\UploadManager\Managers\ImageManager;
 use ondrs\UploadManager\Storages\FileStorage;
+use ondrs\UploadManager\Storages\S3Storage;
 use ondrs\UploadManager\Upload;
 
 class Extension extends CompilerExtension
@@ -42,11 +44,27 @@ class Extension extends CompilerExtension
             throw new Exception('relativePath must be set');
         }
 
-        $builder->addDefinition($this->prefix('storage'))
-            ->setClass(FileStorage::class, [
-                $config['basePath'],
-                $config['relativePath'],
-            ]);
+        if (isset($config['s3'])) {
+            $builder->addDefinition($this->prefix('s3Client'))
+                ->setClass(S3Client::class, [
+                    $config['s3'],
+                ]);
+
+            $builder->addDefinition($this->prefix('storage'))
+                ->setClass(S3Storage::class, [
+                    $config['basePath'],
+                    $config['relativePath'],
+                    $builder->getDefinition($this->prefix('s3Client'))
+                ]);
+
+        } else {
+            $builder->addDefinition($this->prefix('storage'))
+                ->setClass(FileStorage::class, [
+                    $config['basePath'],
+                    $config['relativePath'],
+                ]);
+        }
+
 
         $builder->addDefinition($this->prefix('managerProvider'))
             ->setClass(ManagerProvider::class);

@@ -18,8 +18,9 @@
     "nette/di": "~2.3.0",
     "nette/finder": "~2.3.0",
     "nette/http": "~2.3.0",
-    "nette/neon": "~2.3.0",
-    "nette/utils":"~2.3.0"
+    "nette/utils":"~2.3.0",
+    "guzzlehttp/guzzle":"dev-master#113071af3b2b9eb96b05dab05472cbaed64a3df4 as 6.2.1",
+    "aws/aws-sdk-php": "^3.19"
   },
   "require-dev": {
     "nette/tester": "~1.7.0",

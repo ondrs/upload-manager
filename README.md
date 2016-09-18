@@ -79,15 +79,32 @@ In most cases you want to choose the `wwwDir` as your `basePath` (and it is chos
   - `Y_SIZE` is optional as well as `RESIZE_OPTION`
   - `RESIZE_OPTION` is set to `Image::SHRINK_ONLY` by default
 
-For example we will set the UploadManager according to the Full configuration which is written above.
+For example we will set the UploadManager according to the full configuration which is written above.
 
-    $this->upload->listen('dir/path')
+    $this->upload->filesToDir('dir/path')
 
 Uploading an image file `foo.jpg` with size (1680 x 1050) will result in creation of 5 files: `foo.jpg, 800_foo.jpg, 500_.jpg, 250_foo.jpg, thumb_foo.jpg`
 which will be saved in the `%wwwDir%/uploads/super/dir`
 All files are resized proportionally according to their X dimension and saved with a corresponding prefix.
 File foo.jpg is considered to be an original but it's resized to 1280px.
 
+
+AWS S3 Support
+-----
+
+Setup your credentials and put your bucket name as a basePath. That's all: 
+
+    uploadManager:
+        basePath: 'your-bucket-name'
+        relativePath: 'some/path/to/dir'
+        s3:
+            region: 'eu-central-1'
+            version: '2006-03-01'
+            credentials:
+                key: 'xxxxxxx'
+                secret: 'xxxxxxx'
+
+Simple as that!
 
 Usage
 -----
