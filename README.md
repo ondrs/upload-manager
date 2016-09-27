@@ -3,7 +3,7 @@ Upload Manager [![Build Status](https://travis-ci.org/ondrs/upload-manager.svg?b
 
 Upload manager for Nette framework
 
-Instalation
+Installation
 -----
 
 composer.json
