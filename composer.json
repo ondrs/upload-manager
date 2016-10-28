@@ -14,13 +14,13 @@
   ],
   "require": {
     "php": ">=5.6.0",
-    "nette/bootstrap": "~2.3.0",
-    "nette/di": "~2.3.0",
-    "nette/finder": "~2.3.0",
-    "nette/http": "~2.3.0",
-    "nette/utils":"~2.3.0",
+    "nette/bootstrap": "~2.3.0|~2.4.0",
+    "nette/di": "~2.3.0|~2.4.0",
+    "nette/finder": "~2.3.0|~2.4.0",
+    "nette/http": "~2.3.0|~2.4.0",
+    "nette/utils":"~2.3.0|~2.4.0",
     "guzzlehttp/guzzle":"~6.2.2",
-    "aws/aws-sdk-php": "^3.19"
+    "aws/aws-sdk-php": "~3.19"
   },
   "require-dev": {
     "nette/tester": "~1.7.0",
