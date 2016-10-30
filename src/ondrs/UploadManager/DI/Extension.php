@@ -24,7 +24,7 @@ class Extension extends CompilerExtension
         'basePath' => '%wwwDir%',
         'relativePath' => NULL,
         'imageManager' => [
-            'dimensions' => [],
+            'dimensions' => NULL,
             'maxSize' => NULL,
             'quality' => NULL,
             'type' => NULL,
