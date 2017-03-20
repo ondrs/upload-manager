@@ -219,6 +219,11 @@ class ImageManager extends Object implements IManager
         }
 
         $filename = Utils::sanitizeFileName($fileUpload);
+        $suffix = Utils::getSuffix($filename);
+
+        if ($this->type !== NULL) {
+            $filename = str_replace(".$suffix", ".$this->suffix", $filename);
+        }
 
         /** @var \Nette\Utils\Image */
         $image = $fileUpload->toImage();
@@ -230,10 +235,6 @@ class ImageManager extends Object implements IManager
                 "$this->tempDir/orig_$filename",
                 "$namespace/orig_$filename",
             ];
-        }
-
-        if ($this->type !== NULL) {
-            $filename = str_replace('.' . Utils::getSuffix($filename), '.' . $this->suffix, $filename);
         }
 
         $image->resize($this->maxSize[0], $this->maxSize[1], Image::SHRINK_ONLY);
