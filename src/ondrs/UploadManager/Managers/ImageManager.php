@@ -71,17 +71,17 @@ class ImageManager extends Object implements IManager
     /**
      * @param IStorage $storage
      * @param string $tempDir
-     * @param array $dimensions
+     * @param NULL|array $dimensions
      * @param NULL|array|int $maxSize
      * @param NULL|int $quality
      * @param NULL|string $type
      */
-    public function __construct(IStorage $storage, $tempDir, array $dimensions = [], $maxSize = NULL, $quality = NULL, $type = NULL)
+    public function __construct(IStorage $storage, $tempDir, $dimensions = NULL, $maxSize = NULL, $quality = NULL, $type = NULL)
     {
         $this->storage = $storage;
         $this->tempDir = $tempDir . '/' . uniqid('ImageManager');
 
-        if (count($dimensions)) {
+        if ($dimensions !== NULL) {
             $this->setDimensions($dimensions);
         }
 
