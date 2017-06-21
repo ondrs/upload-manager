@@ -7,6 +7,7 @@ use Nette\Configurator;
 use Nette\DI\Compiler;
 use Nette\DI\CompilerExtension;
 use ondrs\UploadManager\Exception;
+use ondrs\UploadManager\ImageProcessor;
 use ondrs\UploadManager\ManagerContainer;
 use ondrs\UploadManager\ManagerProvider;
 use ondrs\UploadManager\Managers\FileManager;
@@ -72,10 +73,16 @@ class Extension extends CompilerExtension
         $builder->addDefinition($this->prefix('managerContainer'))
             ->setClass(ManagerContainer::class);
 
+        $builder->addDefinition($this->prefix('imageProcessor'))
+            ->setClass(ImageProcessor::class, [
+                $config['tempDir'],
+            ]);
+
         $builder->addDefinition($this->prefix('imageManager'))
             ->setClass(ImageManager::class, [
                 $builder->getDefinition($this->prefix('storage')),
                 $config['tempDir'],
+                $config['imageProcessor'],
                 $config['imageManager']['dimensions'],
                 $config['imageManager']['maxSize'],
                 $config['imageManager']['quality'],

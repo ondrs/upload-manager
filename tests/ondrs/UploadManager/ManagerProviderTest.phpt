@@ -9,6 +9,7 @@ use ondrs\UploadManager\Utils;
 use Tester\Assert;
 
 require_once __DIR__ . '/../../bootstrap.php';
+require_once __DIR__ . '/dummies.php';
 
 
 class ManagerProviderTest extends Tester\TestCase
@@ -16,6 +17,9 @@ class ManagerProviderTest extends Tester\TestCase
 
     /** @var  \Mockery\MockInterface */
     private $managerContainer;
+
+    /** @var  DummyImageProcessor */
+    private $dummyImageProcessor;
 
     /** @var  ManagerProvider */
     private $managerProvider;
@@ -28,10 +32,12 @@ class ManagerProviderTest extends Tester\TestCase
 
         $storage = Mockery::mock(\ondrs\UploadManager\Storages\IStorage::class);
 
+        $this->dummyImageProcessor = new DummyImageProcessor(TEMP_DIR);
+
         $this->managerContainer = new ManagerContainer($diContainer);
 
         $this->managerContainer->register(new FileManager($storage));
-        $this->managerContainer->register(new ImageManager($storage, TEMP_DIR));
+        $this->managerContainer->register(new ImageManager($storage, $this->dummyImageProcessor, TEMP_DIR));
 
         $this->managerProvider = new ManagerProvider($this->managerContainer);
     }

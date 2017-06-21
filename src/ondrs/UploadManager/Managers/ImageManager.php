@@ -6,6 +6,7 @@ use Nette\Http\FileUpload;
 use Nette\Object;
 use Nette\Utils\FileSystem;
 use Nette\Utils\Image;
+use ondrs\UploadManager\ImageProcessor;
 use ondrs\UploadManager\InvalidArgumentException;
 use ondrs\UploadManager\Storages\IStorage;
 use ondrs\UploadManager\Utils;
@@ -36,6 +37,9 @@ class ImageManager extends Object implements IManager
 
     /** @var IStorage */
     private $storage;
+
+    /** @var ImageProcessor */
+    private $imageProcessor;
 
     /** @var string */
     private $tempDir;
@@ -70,16 +74,18 @@ class ImageManager extends Object implements IManager
 
     /**
      * @param IStorage $storage
+     * @param ImageProcessor $imageProcessor
      * @param string $tempDir
      * @param NULL|array $dimensions
      * @param NULL|array|int $maxSize
      * @param NULL|int $quality
      * @param NULL|string $type
      */
-    public function __construct(IStorage $storage, $tempDir, $dimensions = NULL, $maxSize = NULL, $quality = NULL, $type = NULL)
+    public function __construct(IStorage $storage, ImageProcessor $imageProcessor, $tempDir, $dimensions = NULL, $maxSize = NULL, $quality = NULL, $type = NULL)
     {
         $this->storage = $storage;
-        $this->tempDir = $tempDir . '/' . uniqid('ImageManager');
+        $this->imageProcessor = $imageProcessor;
+        $this->tempDir = $tempDir . '/' . uniqid('ImageManager', FALSE);
 
         if ($dimensions !== NULL) {
             $this->setDimensions($dimensions);
@@ -207,6 +213,8 @@ class ImageManager extends Object implements IManager
      * @param string $namespace
      * @param FileUpload $fileUpload
      * @return SplFileInfo
+     * @throws \ondrs\UploadManager\InvalidArgumentException
+     * @throws \Nette\Utils\ImageException
      */
     public function upload($namespace, FileUpload $fileUpload)
     {
@@ -225,8 +233,7 @@ class ImageManager extends Object implements IManager
             $filename = str_replace(".$suffix", ".$this->suffix", $filename);
         }
 
-        /** @var \Nette\Utils\Image */
-        $image = $fileUpload->toImage();
+        $image = $this->imageProcessor->process($fileUpload);
 
         if ($this->saveOriginal) {
             $image->save($this->tempDir . '/orig_' . $filename);
