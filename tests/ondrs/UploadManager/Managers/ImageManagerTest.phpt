@@ -3,13 +3,16 @@
 use \Tester\Assert;
 
 require_once __DIR__ . '/../../../bootstrap.php';
-
+require_once __DIR__ . '/../dummies.php';
 
 class ImageManagerTest extends Tester\TestCase
 {
 
     /** @var  \Mockery\MockInterface */
     private $storage;
+
+    /** @var  DummyImageProcessor */
+    private $dummyImageProcessor;
 
     /** @var  \ondrs\UploadManager\Managers\ImageManager */
     private $imageManager;
@@ -19,7 +22,9 @@ class ImageManagerTest extends Tester\TestCase
     {
         $this->storage = Mockery::mock(\ondrs\UploadManager\Storages\IStorage::class);
 
-        $this->imageManager = new \ondrs\UploadManager\Managers\ImageManager($this->storage, TEMP_DIR);
+        $this->dummyImageProcessor = new DummyImageProcessor(TEMP_DIR);
+
+        $this->imageManager = new \ondrs\UploadManager\Managers\ImageManager($this->storage, $this->dummyImageProcessor, TEMP_DIR);
     }
 
 
