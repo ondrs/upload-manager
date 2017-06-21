@@ -68,10 +68,10 @@ class FileStorageTest extends Tester\TestCase
     {
         $storage = new \ondrs\UploadManager\Storages\FileStorage(__DIR__ . '/../../UploadManager', 'data');
 
-        Assert::count(2, $storage->find('', '*.jpg'));
+        Assert::count(4, $storage->find('', '*.jpg'));
         Assert::count(1, $storage->find('', '*.png'));
         Assert::count(1, $storage->find('', '*.php'));
-        Assert::count(3, $storage->find('', ['*.jpg', '*.png']));
+        Assert::count(5, $storage->find('', ['*.jpg', '*.png']));
 
         foreach ($storage->find('', ['*.jpg', '*.png']) as $filePath => $fileInfo) {
             Assert::true(file_exists($filePath));
