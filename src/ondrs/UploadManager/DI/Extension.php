@@ -81,6 +81,7 @@ class Extension extends CompilerExtension
         $builder->addDefinition($this->prefix('imageManager'))
             ->setClass(ImageManager::class, [
                 $builder->getDefinition($this->prefix('storage')),
+                $builder->getDefinition($this->prefix('imageProcessor')),
                 $config['tempDir'],
                 $config['imageProcessor'],
                 $config['imageManager']['dimensions'],
