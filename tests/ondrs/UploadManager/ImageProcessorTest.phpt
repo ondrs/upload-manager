@@ -152,6 +152,22 @@ class ImageProcessorTest extends Tester\TestCase
     }
 
 
+    function testInvalidSosParameters()
+    {
+        $source = __DIR__ . '/data/invalid-sos-parameters.jpg';
+        $temp = TEMP_DIR . '/invalid-sos-parameters.jpg';
+
+        // must be copied bcs ImageProcessor::process uses FileUpload::move which will move the file
+        \Nette\Utils\FileSystem::copy($source, $temp);
+
+        $processed = $this->imageProcessor->process(
+            \ondrs\UploadManager\Utils::fileUploadFromFile($temp)
+        );
+
+        Assert::type(\Nette\Utils\Image::class, $processed);
+    }
+
+
 }
 
 

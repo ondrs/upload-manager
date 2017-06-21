@@ -5,6 +5,8 @@ namespace ondrs\UploadManager;
 use Nette\Http\FileUpload;
 use Nette\Utils\FileSystem;
 use Nette\Utils\Image;
+use Nette\Utils\ImageException;
+use Nette\Utils\Strings;
 
 class ImageProcessor
 {
@@ -59,6 +61,7 @@ class ImageProcessor
      * @see https://stackoverflow.com/questions/35337709/invalid-sos-parameters-for-sequential-jpeg
      * @param string $path
      * @return Image
+     * @throws \Nette\NotSupportedException
      * @throws \Nette\Utils\ImageException
      * @throws \ondrs\UploadManager\InvalidArgumentException
      */
@@ -68,13 +71,30 @@ class ImageProcessor
             throw new InvalidArgumentException("File '$path' does not exists");
         }
 
-        return Image::fromString(file_get_contents($path));
+        try {
+            return Image::fromFile($path);
+
+        } catch (ImageException $e) {
+
+            if (!preg_match('/Invalid SOS parameters for sequential JPEG/i', $e->getMessage())) {
+                throw $e;
+            }
+
+            $image = @imagecreatefromstring(file_get_contents($path));
+
+            if (!$image) {
+                throw $e;
+            }
+
+            return new Image($image);
+        }
     }
 
 
     /**
      * @param FileUpload $fileUpload
      * @return Image
+     * @throws \Nette\NotSupportedException
      * @throws \ondrs\UploadManager\InvalidArgumentException
      * @throws \Nette\Utils\ImageException
      */
