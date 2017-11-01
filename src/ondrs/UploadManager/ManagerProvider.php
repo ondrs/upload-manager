@@ -27,6 +27,7 @@ class ManagerProvider
     /**
      * @param FileUpload $fileUpload
      * @return IManager
+     * @throws \ondrs\UploadManager\InvalidArgumentException
      */
     public function get(FileUpload $fileUpload)
     {

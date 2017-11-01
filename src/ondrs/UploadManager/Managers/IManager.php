@@ -15,7 +15,7 @@ interface IManager
 
 
     /**
-     * @param string $namespace
+     * @param string     $namespace
      * @param FileUpload $fileUpload
      * @return \SplFileInfo
      */

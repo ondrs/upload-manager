@@ -79,9 +79,10 @@ class Upload
 
 
     /**
-     * @param string $namespace
+     * @param string     $namespace
      * @param FileUpload $fileUpload
      * @return SplFileInfo
+     * @throws \ondrs\UploadManager\InvalidArgumentException
      * @throws UploadErrorException
      */
     public function singleFileToDir($namespace, FileUpload $fileUpload)

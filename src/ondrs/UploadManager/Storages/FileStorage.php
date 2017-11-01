@@ -49,10 +49,11 @@ class FileStorage implements IStorage
      * @param string $source
      * @param string $destination
      * @return string
+     * @throws \Nette\IOException
      */
     public function save($source, $destination)
     {
-        $path = Utils::normalizePath($this->basePath . '/' . $this->relativePath . '/' . $destination);
+        $path = Utils::normalizePath("$this->basePath/$this->relativePath/$destination");
 
         Utils::makeDirectoryRecursive(dirname($path));
         FileSystem::copy($source, $path);
@@ -64,6 +65,7 @@ class FileStorage implements IStorage
     /**
      * @param array $files of [$source, $destination]
      * @return array
+     * @throws \Nette\IOException
      */
     public function bulkSave(array $files)
     {
@@ -79,10 +81,11 @@ class FileStorage implements IStorage
 
     /**
      * @param string $filePath
+     * @throws \Nette\IOException
      */
     public function delete($filePath)
     {
-        $path = Utils::normalizePath($this->basePath . '/' . $this->relativePath . '/' . $filePath);
+        $path = Utils::normalizePath("$this->basePath/$this->relativePath/$filePath");
 
         FileSystem::delete($path);
     }
@@ -90,6 +93,7 @@ class FileStorage implements IStorage
 
     /**
      * @param array $files
+     * @throws \Nette\IOException
      */
     public function bulkDelete(array $files)
     {
@@ -106,7 +110,7 @@ class FileStorage implements IStorage
      */
     public function find($namespace, $filter)
     {
-        $dir = Utils::normalizePath($this->basePath . '/' . $this->relativePath . '/' . $namespace);
+        $dir = Utils::normalizePath("$this->basePath/$this->relativePath/$namespace");
 
         if (!is_dir($dir)) {
             return [];

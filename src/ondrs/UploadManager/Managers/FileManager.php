@@ -11,6 +11,7 @@ use SplFileInfo;
 
 class FileManager implements IManager
 {
+
     use SmartObject;
 
     /** @var IStorage */
@@ -60,7 +61,7 @@ class FileManager implements IManager
 
 
     /**
-     * @param string $namespace
+     * @param string     $namespace
      * @param FileUpload $fileUpload
      * @return SplFileInfo
      * @throws NotAllowedFileException

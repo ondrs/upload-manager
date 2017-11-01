@@ -21,8 +21,8 @@ class S3Storage implements IStorage
 
 
     /**
-     * @param string $basePath
-     * @param string $relativePath
+     * @param string   $basePath
+     * @param string   $relativePath
      * @param S3Client $s3Client
      */
     public function __construct($basePath, $relativePath, S3Client $s3Client)
@@ -61,7 +61,7 @@ class S3Storage implements IStorage
     {
         return $this->s3Client->putObjectAsync([
             'Bucket' => $this->basePath,
-            'Key' => Utils::normalizePath($this->relativePath . '/' . $destination),
+            'Key' => Utils::normalizePath("$this->relativePath/$destination"),
             'SourceFile' => $source,
             'ACL' => 'public-read',
             'StorageClass' => 'REDUCED_REDUNDANCY',
@@ -88,6 +88,7 @@ class S3Storage implements IStorage
     /**
      * @param array $files of [$source, $destination]
      * @return array
+     * @throws \LogicException
      */
     public function bulkSave(array $files)
     {
@@ -114,7 +115,7 @@ class S3Storage implements IStorage
     {
         $this->s3Client->deleteObject([
             'Bucket' => $this->basePath,
-            'Key' => Utils::normalizePath($this->relativePath . '/' . $filePath),
+            'Key' => Utils::normalizePath("$this->relativePath/$filePath"),
         ]);
     }
 
@@ -128,7 +129,7 @@ class S3Storage implements IStorage
 
         foreach ($files as $filePath) {
             $objects[] = [
-                'Key' => Utils::normalizePath($this->relativePath . '/' . $filePath)
+                'Key' => Utils::normalizePath("$this->relativePath/$filePath"),
             ];
         }
 
@@ -166,6 +167,7 @@ class S3Storage implements IStorage
             $pattern[] = $prefix . strtr(preg_quote($mask, '#'),
                     array('\*\*' => '.*', '\*' => '[^/]*', '\?' => '[^/]', '\[\!' => '[^', '\[' => '[', '\]' => ']', '\-' => '-'));
         }
+
         return $pattern ? '#/(' . implode('|', $pattern) . ')\z#i' : NULL;
     }
 
