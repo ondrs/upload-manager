@@ -3,14 +3,16 @@
 namespace ondrs\UploadManager\Managers;
 
 use Nette\Http\FileUpload;
-use Nette\Object;
+use Nette\SmartObject;
 use ondrs\UploadManager\NotAllowedFileException;
 use ondrs\UploadManager\Storages\IStorage;
 use ondrs\UploadManager\Utils;
 use SplFileInfo;
 
-class FileManager extends Object implements IManager
+class FileManager implements IManager
 {
+
+    use SmartObject;
 
     /** @var IStorage */
     private $storage;
@@ -59,7 +61,7 @@ class FileManager extends Object implements IManager
 
 
     /**
-     * @param string $namespace
+     * @param string     $namespace
      * @param FileUpload $fileUpload
      * @return SplFileInfo
      * @throws NotAllowedFileException

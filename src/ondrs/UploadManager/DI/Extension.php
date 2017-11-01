@@ -55,7 +55,7 @@ class Extension extends CompilerExtension
                 ->setClass(S3Storage::class, [
                     $config['basePath'],
                     $config['relativePath'],
-                    $builder->getDefinition($this->prefix('s3Client'))
+                    $builder->getDefinition($this->prefix('s3Client')),
                 ]);
 
         } else {

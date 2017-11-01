@@ -3,7 +3,7 @@
 namespace ondrs\UploadManager\Managers;
 
 use Nette\Http\FileUpload;
-use Nette\Object;
+use Nette\SmartObject;
 use Nette\Utils\FileSystem;
 use Nette\Utils\Image;
 use ondrs\UploadManager\ImageProcessor;
@@ -12,8 +12,10 @@ use ondrs\UploadManager\Storages\IStorage;
 use ondrs\UploadManager\Utils;
 use SplFileInfo;
 
-class ImageManager extends Object implements IManager
+class ImageManager implements IManager
 {
+
+    use SmartObject;
 
     /** @var array */
     private static $methods = [
@@ -51,12 +53,12 @@ class ImageManager extends Object implements IManager
     private $dimensions = [
         800 => [
             [800, NULL],
-            Image::SHRINK_ONLY
+            Image::SHRINK_ONLY,
         ],
         250 => [
             [250, NULL],
-            Image::SHRINK_ONLY
-        ]
+            Image::SHRINK_ONLY,
+        ],
     ];
 
     /** @var NULL|int */
@@ -73,13 +75,13 @@ class ImageManager extends Object implements IManager
 
 
     /**
-     * @param IStorage $storage
+     * @param IStorage       $storage
      * @param ImageProcessor $imageProcessor
-     * @param string $tempDir
-     * @param NULL|array $dimensions
+     * @param string         $tempDir
+     * @param NULL|array     $dimensions
      * @param NULL|array|int $maxSize
-     * @param NULL|int $quality
-     * @param NULL|string $type
+     * @param NULL|int       $quality
+     * @param NULL|string    $type
      */
     public function __construct(IStorage $storage, ImageProcessor $imageProcessor, $tempDir, $dimensions = NULL, $maxSize = NULL, $quality = NULL, $type = NULL)
     {
@@ -104,6 +106,7 @@ class ImageManager extends Object implements IManager
         }
     }
 
+
     /**
      * @param array $dimensions
      */
@@ -119,6 +122,7 @@ class ImageManager extends Object implements IManager
         }, $dimensions);
     }
 
+
     /**
      * @return array
      */
@@ -126,6 +130,7 @@ class ImageManager extends Object implements IManager
     {
         return $this->dimensions;
     }
+
 
     /**
      * @param array|int $maxSize
@@ -135,6 +140,7 @@ class ImageManager extends Object implements IManager
         $this->maxSize = is_array($maxSize) ? $maxSize : [$maxSize, NULL];
     }
 
+
     /**
      * @return array
      */
@@ -143,6 +149,7 @@ class ImageManager extends Object implements IManager
         return $this->maxSize;
     }
 
+
     /**
      * @return int|NULL
      */
@@ -150,6 +157,7 @@ class ImageManager extends Object implements IManager
     {
         return $this->quality;
     }
+
 
     /**
      * @param int $quality
@@ -171,6 +179,7 @@ class ImageManager extends Object implements IManager
         $this->saveOriginal = (bool)$yes;
     }
 
+
     /**
      * @return NULL|string
      */
@@ -178,6 +187,7 @@ class ImageManager extends Object implements IManager
     {
         return $this->type;
     }
+
 
     /**
      * @param string $type
@@ -190,6 +200,7 @@ class ImageManager extends Object implements IManager
             $this->suffix = $type;
         }
     }
+
 
     /**
      * @return string
@@ -210,9 +221,11 @@ class ImageManager extends Object implements IManager
 
 
     /**
-     * @param string $namespace
+     * @param string     $namespace
      * @param FileUpload $fileUpload
      * @return SplFileInfo
+     * @throws \Nette\NotSupportedException
+     * @throws \Nette\IOException
      * @throws \ondrs\UploadManager\InvalidArgumentException
      * @throws \Nette\Utils\ImageException
      */

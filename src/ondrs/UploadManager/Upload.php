@@ -4,12 +4,13 @@ namespace ondrs\UploadManager;
 
 use Nette\Http\FileUpload;
 use Nette\Http\IRequest;
-use Nette\Object;
+use Nette\SmartObject;
 use ondrs\UploadManager\Managers\IManager;
 use SplFileInfo;
 
-class Upload extends Object
+class Upload
 {
+    use SmartObject;
 
     /** @var IRequest */
     private $httpRequest;
@@ -78,9 +79,10 @@ class Upload extends Object
 
 
     /**
-     * @param string $namespace
+     * @param string     $namespace
      * @param FileUpload $fileUpload
      * @return SplFileInfo
+     * @throws \ondrs\UploadManager\InvalidArgumentException
      * @throws UploadErrorException
      */
     public function singleFileToDir($namespace, FileUpload $fileUpload)

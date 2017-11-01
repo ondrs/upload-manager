@@ -19,8 +19,8 @@
     "nette/di": "~2.3.0|~2.4.0",
     "nette/finder": "~2.3.0|~2.4.0",
     "nette/http": "~2.3.0|~2.4.0",
-    "nette/utils":"~2.3.0|~2.4.0",
-    "guzzlehttp/guzzle":"~6.2.2",
+    "nette/utils":"~2.4.0",
+    "guzzlehttp/guzzle":"~6.3.0",
     "aws/aws-sdk-php": "~3.19"
   },
   "suggest": {

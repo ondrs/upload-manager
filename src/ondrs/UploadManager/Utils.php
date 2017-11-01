@@ -82,6 +82,7 @@ class Utils
     /**
      * @param string $filename
      * @return FileUpload
+     * @throws \ondrs\UploadManager\FileNotExistsException
      */
     public static function fileUploadFromFile($filename)
     {
