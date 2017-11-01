@@ -6,7 +6,6 @@ use Nette\Http\FileUpload;
 use Nette\Utils\FileSystem;
 use Nette\Utils\Image;
 use Nette\Utils\ImageException;
-use Nette\Utils\Strings;
 
 class ImageProcessor
 {

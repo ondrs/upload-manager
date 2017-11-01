@@ -3,7 +3,7 @@
 namespace ondrs\UploadManager\Managers;
 
 use Nette\Http\FileUpload;
-use Nette\Object;
+use Nette\SmartObject;
 use Nette\Utils\FileSystem;
 use Nette\Utils\Image;
 use ondrs\UploadManager\ImageProcessor;
@@ -12,8 +12,9 @@ use ondrs\UploadManager\Storages\IStorage;
 use ondrs\UploadManager\Utils;
 use SplFileInfo;
 
-class ImageManager extends Object implements IManager
+class ImageManager implements IManager
 {
+    use SmartObject;
 
     /** @var array */
     private static $methods = [
