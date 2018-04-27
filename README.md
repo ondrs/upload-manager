@@ -8,7 +8,7 @@ Installation
 
 composer.json
 
-    "ondrs/upload-manager": "v6.0.2"
+    "ondrs/upload-manager": "v7.0.0"
 
 Configuration
 -----
