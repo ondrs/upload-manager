@@ -34,7 +34,7 @@ uploadManager:
     basePath: %wwwDir%
     relativePath: '/uploads'
     fileManager:
-        blackList: {php}
+        blacklist: {php}
     imageManager:
         maxSize: 1280
         type: jpg
