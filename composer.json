@@ -5,6 +5,7 @@
   "keywords": ["nette", "upload", "file upload"],
   "homepage": "http://ondraplsek.cz",
   "license": ["MIT"],
+  "version": "7.1.0",
   "authors": [
     {
       "name": "Ondřej Plšek",
@@ -15,11 +16,11 @@
   "require": {
     "php": ">=5.6.0",
     "ext-gd": "*",
-    "nette/bootstrap": "~2.3.0|~2.4.0",
-    "nette/di": "~2.3.0|~2.4.0",
-    "nette/finder": "~2.3.0|~2.4.0",
-    "nette/http": "~2.3.0|~2.4.0",
-    "nette/utils":"~2.4.0|~2.5.0",
+    "nette/bootstrap": "~2.3.0|~2.4.0|^3.0.0",
+    "nette/di": "~2.3.0|~2.4.0|^3.0.0",
+    "nette/finder": "~2.3.0|~2.4.0|~2.5.0",
+    "nette/http": "~2.3.0|~2.4.0|^3.0.0",
+    "nette/utils":"~2.4.0|~2.5.0|^3.0.0",
     "guzzlehttp/guzzle":"~6.3.0",
     "aws/aws-sdk-php": "~3.19"
   },

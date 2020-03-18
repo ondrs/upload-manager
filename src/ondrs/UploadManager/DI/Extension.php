@@ -38,7 +38,7 @@ class Extension extends CompilerExtension
 
     public function loadConfiguration()
     {
-        $config = $this->getConfig($this->defaults);
+        $config = $this->getConfig() + $this->defaults;
         $builder = $this->getContainerBuilder();
 
         if ($config['relativePath'] === NULL) {
@@ -47,12 +47,12 @@ class Extension extends CompilerExtension
 
         if (isset($config['s3'])) {
             $builder->addDefinition($this->prefix('s3Client'))
-                ->setClass(S3Client::class, [
+                ->setFactory(S3Client::class, [
                     $config['s3'],
                 ]);
 
             $builder->addDefinition($this->prefix('storage'))
-                ->setClass(S3Storage::class, [
+                ->setFactory(S3Storage::class, [
                     $config['basePath'],
                     $config['relativePath'],
                     $builder->getDefinition($this->prefix('s3Client')),
@@ -60,7 +60,7 @@ class Extension extends CompilerExtension
 
         } else {
             $builder->addDefinition($this->prefix('storage'))
-                ->setClass(FileStorage::class, [
+                ->setFactory(FileStorage::class, [
                     $config['basePath'],
                     $config['relativePath'],
                 ]);
@@ -74,12 +74,12 @@ class Extension extends CompilerExtension
             ->setClass(ManagerContainer::class);
 
         $builder->addDefinition($this->prefix('imageProcessor'))
-            ->setClass(ImageProcessor::class, [
+            ->setFactory(ImageProcessor::class, [
                 $config['tempDir'],
             ]);
 
         $builder->addDefinition($this->prefix('imageManager'))
-            ->setClass(ImageManager::class, [
+            ->setFactory(ImageManager::class, [
                 $builder->getDefinition($this->prefix('storage')),
                 $builder->getDefinition($this->prefix('imageProcessor')),
                 $config['tempDir'],
@@ -95,7 +95,7 @@ class Extension extends CompilerExtension
         }
 
         $builder->addDefinition($this->prefix('fileManager'))
-            ->setClass(FileManager::class, [
+            ->setFactory(FileManager::class, [
                 $builder->getDefinition($this->prefix('storage')),
                 $config['fileManager']['blacklist'],
             ]);
