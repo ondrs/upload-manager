@@ -8,7 +8,7 @@ Installation
 
 composer.json
 
-    "ondrs/upload-manager": "v7.0.0"
+    "ondrs/upload-manager": "v8.0.0"
 
 Configuration
 -----
@@ -95,26 +95,6 @@ Uploading an image file `foo.jpg` with size (1680 x 1050) will result in creatio
 which will be saved in the `%wwwDir%/uploads/super/dir`
 All files are resized proportionally according to their X dimension and saved with a corresponding prefix.
 File foo.jpg is considered to be an original but it's resized to 1280px.
-
-
-AWS S3 Support
------
-
-Setup your credentials and put your bucket name as a basePath. That's all: 
-
-```yaml
-uploadManager:
-    basePath: 'your-bucket-name'
-    relativePath: 'some/path/to/dir'
-    s3:
-        region: 'eu-central-1'
-        version: '2006-03-01'
-        credentials:
-            key: 'xxxxxxx'
-            secret: 'xxxxxxx'
-```
-
-Simple as that!
 
 Usage
 -----

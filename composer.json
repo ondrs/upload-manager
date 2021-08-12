@@ -13,15 +13,14 @@
     }
   ],
   "require": {
-    "php": ">=5.6.0",
+    "php": ">=7.1",
     "ext-gd": "*",
-    "nette/bootstrap": "~2.3.0|~2.4.0",
-    "nette/di": "~2.3.0|~2.4.0",
-    "nette/finder": "~2.3.0|~2.4.0",
-    "nette/http": "~2.3.0|~2.4.0",
-    "nette/utils":"~2.4.0|~2.5.0",
-    "guzzlehttp/guzzle":"~6.3.0",
-    "aws/aws-sdk-php": "~3.19"
+    "nette/bootstrap": "~3.0.0",
+    "nette/di": "~3.0.0",
+    "nette/finder": "~3.0.0",
+    "nette/http": "~3.0.0",
+    "nette/utils":"~3.0.0",
+    "guzzlehttp/guzzle":"~6.5.5"
   },
   "suggest": {
     "ext-exif": "to read and keep images EXIF for fixing image orientation"
