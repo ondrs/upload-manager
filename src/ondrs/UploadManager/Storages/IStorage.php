@@ -43,7 +43,7 @@ interface IStorage
      * @param array $files
      * @return void
      */
-    function bulkDelete(array $files);
+    public function bulkDelete(array $files);
 
 
     /**

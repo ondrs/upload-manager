@@ -33,9 +33,9 @@ class ImageManagerTest extends Tester\TestCase
         $filePath = __DIR__ . '/../data/test-image.jpg';
 
         $this->storage->shouldReceive('bulkSave')->with([
-            [$this->imageManager->getTempDir() . '/test-image_8bea6ad6b.jpg', 'namespace/test-image_8bea6ad6b.jpg'],
-            [$this->imageManager->getTempDir() . '/800_test-image_8bea6ad6b.jpg', 'namespace/800_test-image_8bea6ad6b.jpg'],
-            [$this->imageManager->getTempDir() . '/250_test-image_8bea6ad6b.jpg', 'namespace/250_test-image_8bea6ad6b.jpg'],
+            [$this->imageManager->getTempDir() . '/test-image_8bea6ad6b.jpeg', 'namespace/test-image_8bea6ad6b.jpeg'],
+            [$this->imageManager->getTempDir() . '/800_test-image_8bea6ad6b.jpeg', 'namespace/800_test-image_8bea6ad6b.jpeg'],
+            [$this->imageManager->getTempDir() . '/250_test-image_8bea6ad6b.jpeg', 'namespace/250_test-image_8bea6ad6b.jpeg'],
         ]);
 
         $fileInfo = $this->imageManager->upload('namespace', \ondrs\UploadManager\Utils::fileUploadFromFile($filePath));

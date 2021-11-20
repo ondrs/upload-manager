@@ -283,6 +283,8 @@ class ImageManager implements IManager
             ];
         }
 
+        var_dump($filesToSave);
+
         $results = $this->storage->bulkSave($filesToSave);
 
         // cleanup temp files
