@@ -10,6 +10,7 @@ jobs:
 
       - run: apk add make
       - run: make build
+      - run: ls
       
       # Download and cache dependencies
       - restore_cache:
