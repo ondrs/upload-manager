@@ -1,5 +1,8 @@
-Upload Manager [![Total Downloads](https://poser.pugx.org/ondrs/upload-manager/downloads)](https://packagist.org/packages/ondrs/upload-manager) [![Build Status](https://travis-ci.org/ondrs/upload-manager.svg?branch=master)](https://travis-ci.org/ondrs/upload-manager) [![Latest Stable Version](https://poser.pugx.org/ondrs/upload-manager/v/stable)](https://packagist.org/packages/ondrs/upload-manager)
+Upload Manager
 ==============
+[![Total Downloads](https://poser.pugx.org/ondrs/upload-manager/downloads)](https://packagist.org/packages/ondrs/upload-manager) 
+[![CircleCI](https://circleci.com/gh/ondrs/upload-manager/tree/master.svg?style=svg)](https://circleci.com/gh/ondrs/upload-manager/tree/master) 
+[![Latest Stable Version](https://poser.pugx.org/ondrs/upload-manager/v/stable)](https://packagist.org/packages/ondrs/upload-manager)
 
 Upload manager for Nette framework
 
