@@ -23,7 +23,7 @@ class ManagerContainer
     /**
      * @param IManager $instance
      */
-    public function register(IManager $instance)
+    public function register(IManager $instance): void
     {
         $this->instances[get_class($instance)] = $instance;
     }
@@ -33,9 +33,9 @@ class ManagerContainer
      * @param string $name
      * @return IManager|NULL
      */
-    public function get($name)
+    public function get($name): ?IManager
     {
-        return isset($this->instances[$name]) ? $this->instances[$name] : NULL;
+        return $this->instances[$name] ?? NULL;
     }
 
 

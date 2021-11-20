@@ -29,7 +29,7 @@ class ManagerProvider
      * @return IManager
      * @throws \ondrs\UploadManager\InvalidArgumentException
      */
-    public function get(FileUpload $fileUpload)
+    public function get(FileUpload $fileUpload): IManager
     {
         foreach ($this->rules as $rule) {
             $result = $rule($fileUpload, $this->managerContainer);
@@ -46,7 +46,7 @@ class ManagerProvider
     /**
      * @return callable[]
      */
-    public static function getBasicRules()
+    public static function getBasicRules(): array
     {
         return [
             function (FileUpload $fileUpload, ManagerContainer $managerContainer) {

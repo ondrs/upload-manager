@@ -75,15 +75,15 @@ class ImageManager implements IManager
 
 
     /**
-     * @param IStorage       $storage
+     * @param IStorage $storage
      * @param ImageProcessor $imageProcessor
-     * @param string         $tempDir
-     * @param NULL|array     $dimensions
+     * @param string $tempDir
+     * @param NULL|array $dimensions
      * @param NULL|array|int $maxSize
-     * @param NULL|int       $quality
-     * @param NULL|string    $type
+     * @param NULL|int $quality
+     * @param NULL|string $type
      */
-    public function __construct(IStorage $storage, ImageProcessor $imageProcessor, $tempDir, $dimensions = NULL, $maxSize = NULL, $quality = NULL, $type = NULL)
+    public function __construct(IStorage $storage, ImageProcessor $imageProcessor, string $tempDir, $dimensions = NULL, $maxSize = NULL, $quality = NULL, $type = NULL)
     {
         $this->storage = $storage;
         $this->imageProcessor = $imageProcessor;
@@ -107,10 +107,7 @@ class ImageManager implements IManager
     }
 
 
-    /**
-     * @param array $dimensions
-     */
-    public function setDimensions(array $dimensions)
+    public function setDimensions(array $dimensions): void
     {
         $this->dimensions = array_map(function ($i) {
 
@@ -123,10 +120,7 @@ class ImageManager implements IManager
     }
 
 
-    /**
-     * @return array
-     */
-    public function getDimensions()
+    public function getDimensions(): array
     {
         return $this->dimensions;
     }
@@ -141,29 +135,19 @@ class ImageManager implements IManager
     }
 
 
-    /**
-     * @return array
-     */
-    public function getMaxSize()
+    public function getMaxSize(): array
     {
         return $this->maxSize;
     }
 
 
-    /**
-     * @return int|NULL
-     */
-    public function getQuality()
+    public function getQuality(): ?int
     {
         return $this->quality;
     }
 
 
-    /**
-     * @param int $quality
-     * @return int|NULL
-     */
-    public function setQuality($quality)
+    public function setQuality(int $quality): void
     {
         if ($quality >= 0 && $quality <= 100) {
             $this->quality = $quality;
@@ -174,7 +158,7 @@ class ImageManager implements IManager
     /**
      * @param bool $yes
      */
-    public function saveOriginal($yes = TRUE)
+    public function saveOriginal($yes = TRUE): void
     {
         $this->saveOriginal = (bool)$yes;
     }
@@ -183,17 +167,13 @@ class ImageManager implements IManager
     /**
      * @return NULL|string
      */
-    public function getType()
+    public function getType(): ?string
     {
         return $this->type;
     }
 
 
-    /**
-     * @param string $type
-     * @return NULL|string
-     */
-    public function setType($type)
+    public function setType(string $type): ?string
     {
         if (isset(self::$types[$type])) {
             $this->type = self::$types[$type];
@@ -202,26 +182,20 @@ class ImageManager implements IManager
     }
 
 
-    /**
-     * @return string
-     */
-    public function getTempDir()
+    public function getTempDir(): string
     {
         return $this->tempDir;
     }
 
 
-    /**
-     * @return IStorage
-     */
-    public function getStorage()
+    public function getStorage(): IStorage
     {
         return $this->storage;
     }
 
 
     /**
-     * @param string     $namespace
+     * @param string $namespace
      * @param FileUpload $fileUpload
      * @return SplFileInfo
      * @throws \Nette\NotSupportedException
@@ -229,7 +203,7 @@ class ImageManager implements IManager
      * @throws \ondrs\UploadManager\InvalidArgumentException
      * @throws \Nette\Utils\ImageException
      */
-    public function upload($namespace, FileUpload $fileUpload)
+    public function upload(string $namespace, FileUpload $fileUpload): SplFileInfo
     {
         if (!$fileUpload->isImage()) {
             throw new InvalidArgumentException('This is not an image!');
@@ -283,8 +257,6 @@ class ImageManager implements IManager
             ];
         }
 
-        var_dump($filesToSave);
-
         $results = $this->storage->bulkSave($filesToSave);
 
         // cleanup temp files
@@ -303,12 +275,7 @@ class ImageManager implements IManager
     }
 
 
-    /**
-     * @param string $namespace
-     * @param string $filename
-     * @return void
-     */
-    public function delete($namespace, $filename)
+    public function delete(string $namespace, string $filename): void
     {
         $filter = array_keys($this->dimensions);
 

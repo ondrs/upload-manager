@@ -5,45 +5,26 @@ namespace ondrs\UploadManager\Storages;
 interface IStorage
 {
 
-    /**
-     * @return string
-     */
-    function getBasePath();
+    public function getBasePath(): string;
 
 
-    /**
-     * @return string
-     */
-    function getRelativePath();
+    public function getRelativePath(): string;
 
 
-    /**
-     * @param string $source
-     * @param string $destination
-     * @return string
-     */
-    function save($source, $destination);
+    public function save(string $source, string $destination): string;
 
 
     /**
      * @param array $files of [$source, $destination]
      * @return array
      */
-    function bulkSave(array $files);
+    public function bulkSave(array $files): array;
 
 
-    /**
-     * @param string $path
-     * @return void
-     */
-    function delete($path);
+    public function delete(string $path): void;
 
 
-    /**
-     * @param array $files
-     * @return void
-     */
-    public function bulkDelete(array $files);
+    public function bulkDelete(array $files): void;
 
 
     /**
@@ -51,5 +32,5 @@ interface IStorage
      * @param string $filter
      * @return array of [$filePath => SplFileInfo]
      */
-    function find($namespace, $filter);
+    public function find(string $namespace, $filter): array;
 }

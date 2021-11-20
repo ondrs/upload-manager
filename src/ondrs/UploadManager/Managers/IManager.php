@@ -8,25 +8,12 @@ use ondrs\UploadManager\Storages\IStorage;
 interface IManager
 {
 
-    /**
-     * @return IStorage
-     */
-    function getStorage();
+    public function getStorage(): IStorage;
 
 
-    /**
-     * @param string     $namespace
-     * @param FileUpload $fileUpload
-     * @return \SplFileInfo
-     */
-    function upload($namespace, FileUpload $fileUpload);
+    public function upload(string $namespace, FileUpload $fileUpload): \SplFileInfo;
 
 
-    /**
-     * @param string $namespace
-     * @param string $filename
-     * @return void
-     */
-    function delete($namespace, $filename);
+    public function delete(string $namespace, string $filename);
 
 } 

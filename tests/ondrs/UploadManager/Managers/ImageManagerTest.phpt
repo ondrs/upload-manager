@@ -1,6 +1,9 @@
 <?php
 
-use \Tester\Assert;
+use ondrs\UploadManager\Managers\ImageManager;
+use ondrs\UploadManager\Storages\IStorage;
+use ondrs\UploadManager\Utils;
+use Tester\Assert;
 
 require_once __DIR__ . '/../../../bootstrap.php';
 require_once __DIR__ . '/../dummies.php';
@@ -14,17 +17,17 @@ class ImageManagerTest extends Tester\TestCase
     /** @var  DummyImageProcessor */
     private $dummyImageProcessor;
 
-    /** @var  \ondrs\UploadManager\Managers\ImageManager */
+    /** @var  ImageManager */
     private $imageManager;
 
 
     function setUp()
     {
-        $this->storage = Mockery::mock(\ondrs\UploadManager\Storages\IStorage::class);
+        $this->storage = Mockery::mock(IStorage::class);
 
         $this->dummyImageProcessor = new DummyImageProcessor(TEMP_DIR);
 
-        $this->imageManager = new \ondrs\UploadManager\Managers\ImageManager($this->storage, $this->dummyImageProcessor, TEMP_DIR);
+        $this->imageManager = new ImageManager($this->storage, $this->dummyImageProcessor, TEMP_DIR);
     }
 
 
@@ -32,13 +35,18 @@ class ImageManagerTest extends Tester\TestCase
     {
         $filePath = __DIR__ . '/../data/test-image.jpg';
 
-        $this->storage->shouldReceive('bulkSave')->with([
+        $expectedArgs = [
             [$this->imageManager->getTempDir() . '/test-image_8bea6ad6b.jpeg', 'namespace/test-image_8bea6ad6b.jpeg'],
             [$this->imageManager->getTempDir() . '/800_test-image_8bea6ad6b.jpeg', 'namespace/800_test-image_8bea6ad6b.jpeg'],
             [$this->imageManager->getTempDir() . '/250_test-image_8bea6ad6b.jpeg', 'namespace/250_test-image_8bea6ad6b.jpeg'],
-        ]);
+        ];
 
-        $fileInfo = $this->imageManager->upload('namespace', \ondrs\UploadManager\Utils::fileUploadFromFile($filePath));
+        $this->storage->shouldReceive('bulkSave')
+            ->once()
+            ->with($expectedArgs)
+            ->andReturn([new SplFileInfo($filePath)]);
+
+        $fileInfo = $this->imageManager->upload('namespace', Utils::fileUploadFromFile($filePath));
 
         Assert::type(SplFileInfo::class, $fileInfo);
         Assert::false(is_dir($this->imageManager->getTempDir()));   // temp dir has to be cleaned
@@ -48,7 +56,7 @@ class ImageManagerTest extends Tester\TestCase
     function testUploadNonImage()
     {
         Assert::exception(function () {
-            $this->imageManager->upload('namespace', \ondrs\UploadManager\Utils::fileUploadFromFile(__DIR__ . '/../data/test-image.text'));
+            $this->imageManager->upload('namespace', Utils::fileUploadFromFile(__DIR__ . '/../data/test-image.text'));
         }, InvalidArgumentException::class);
     }
 

@@ -27,19 +27,13 @@ class FileStorage implements IStorage
     }
 
 
-    /**
-     * @return string
-     */
-    public function getBasePath()
+    public function getBasePath(): string
     {
         return $this->basePath;
     }
 
 
-    /**
-     * @return string
-     */
-    public function getRelativePath()
+    public function getRelativePath(): string
     {
         return $this->relativePath;
     }
@@ -51,7 +45,7 @@ class FileStorage implements IStorage
      * @return string
      * @throws \Nette\IOException
      */
-    public function save($source, $destination)
+    public function save(string $source, string $destination): string
     {
         $path = Utils::normalizePath("$this->basePath/$this->relativePath/$destination");
 
@@ -67,7 +61,7 @@ class FileStorage implements IStorage
      * @return array
      * @throws \Nette\IOException
      */
-    public function bulkSave(array $files)
+    public function bulkSave(array $files): array
     {
         $results = [];
 
@@ -80,12 +74,12 @@ class FileStorage implements IStorage
 
 
     /**
-     * @param string $filePath
+     * @param string $path
      * @throws \Nette\IOException
      */
-    public function delete($filePath)
+    public function delete(string $path): void
     {
-        $path = Utils::normalizePath("$this->basePath/$this->relativePath/$filePath");
+        $path = Utils::normalizePath("$this->basePath/$this->relativePath/$path");
 
         FileSystem::delete($path);
     }
@@ -95,7 +89,7 @@ class FileStorage implements IStorage
      * @param array $files
      * @throws \Nette\IOException
      */
-    public function bulkDelete(array $files)
+    public function bulkDelete(array $files): void
     {
         foreach ($files as $file) {
             $this->delete($file);
@@ -104,11 +98,11 @@ class FileStorage implements IStorage
 
 
     /**
-     * @param $namespace
-     * @param $filter
+     * @param string $namespace
+     * @param string|string[] $filter
      * @return array
      */
-    public function find($namespace, $filter)
+    public function find(string $namespace, $filter): array
     {
         $dir = Utils::normalizePath("$this->basePath/$this->relativePath/$namespace");
 

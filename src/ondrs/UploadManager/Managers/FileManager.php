@@ -33,40 +33,30 @@ class FileManager implements IManager
     }
 
 
-    /**
-     * @param array $blacklist
-     */
-    public function setBlacklist(array $blacklist)
+    public function setBlacklist(array $blacklist): void
     {
         $this->blacklist = $blacklist;
     }
 
-
-    /**
-     * @return array
-     */
-    public function getBlacklist()
+    public function getBlacklist(): array
     {
         return $this->blacklist;
     }
 
 
-    /**
-     * @return IStorage
-     */
-    public function getStorage()
+    public function getStorage(): IStorage
     {
         return $this->storage;
     }
 
 
     /**
-     * @param string     $namespace
+     * @param string $namespace
      * @param FileUpload $fileUpload
      * @return SplFileInfo
      * @throws NotAllowedFileException
      */
-    public function upload($namespace, FileUpload $fileUpload)
+    public function upload(string $namespace, FileUpload $fileUpload): SplFileInfo
     {
         $filename = Utils::sanitizeFileName($fileUpload);
 
@@ -88,7 +78,7 @@ class FileManager implements IManager
      * @param string $filename
      * @return void
      */
-    public function delete($namespace, $filename)
+    public function delete(string $namespace, string $filename)
     {
         $this->storage->delete("$namespace/$filename");
     }

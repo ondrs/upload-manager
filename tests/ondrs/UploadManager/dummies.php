@@ -1,9 +1,13 @@
 <?php
 
-class DummyImageProcessor extends \ondrs\UploadManager\ImageProcessor
+use Nette\Http\FileUpload;
+use Nette\Utils\Image;
+use ondrs\UploadManager\ImageProcessor;
+
+class DummyImageProcessor extends ImageProcessor
 {
 
-    public function process(\Nette\Http\FileUpload $fileUpload)
+    public function process(FileUpload $fileUpload): Image
     {
         return $fileUpload->toImage();
     }

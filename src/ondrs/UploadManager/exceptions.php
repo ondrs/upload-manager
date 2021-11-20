@@ -28,9 +28,7 @@ class UploadErrorException extends Exception
             throw new Exception('Upload is OK, why you are throwing en exception?');
         }
 
-        $message = isset(self::$messages[$code])
-            ? self::$messages[$code]
-            : 'Unknown error code';
+        $message = self::$messages[$code] ?? 'Unknown error code';
 
         parent::__construct($message, $code);
     }

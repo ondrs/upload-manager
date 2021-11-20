@@ -35,11 +35,7 @@ class ImageProcessor
     }
 
 
-    /**
-     * @param array $exif
-     * @return int|NULL
-     */
-    public static function getOrientation(array $exif)
+    public static function getOrientation(array $exif): ?int
     {
         foreach ($exif as $key => $val) {
 
@@ -64,7 +60,7 @@ class ImageProcessor
      * @throws \Nette\Utils\ImageException
      * @throws \ondrs\UploadManager\InvalidArgumentException
      */
-    public static function fromString($path)
+    public static function fromString(string $path): Image
     {
         if (!file_exists($path)) {
             throw new InvalidArgumentException("File '$path' does not exists");
@@ -97,7 +93,7 @@ class ImageProcessor
      * @throws \ondrs\UploadManager\InvalidArgumentException
      * @throws \Nette\Utils\ImageException
      */
-    public function process(FileUpload $fileUpload)
+    public function process(FileUpload $fileUpload): Image
     {
         $tempFile = "$this->tempDir/" . uniqid('', FALSE) . $fileUpload->getSanitizedName();
 

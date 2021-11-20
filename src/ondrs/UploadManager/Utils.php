@@ -8,22 +8,15 @@ use Nette\Utils\Strings;
 class Utils
 {
 
-    /**
-     * @param string $path
-     * @return string
-     */
-    public static function normalizePath($path)
+
+    public static function normalizePath(string $path): string
     {
         $path = preg_replace('~/+~', '/', $path);
         return rtrim($path, '/');
     }
 
 
-    /**
-     * @param string $filename
-     * @return string
-     */
-    public static function getSuffix($filename)
+    public static function getSuffix(string $filename): string
     {
         $fileInfo = new \SplFileInfo($filename);
 
@@ -31,11 +24,7 @@ class Utils
     }
 
 
-    /**
-     * @param FileUpload $fileUpload
-     * @return string
-     */
-    public static function sanitizeFileName(FileUpload $fileUpload)
+    public static function sanitizeFileName(FileUpload $fileUpload): string
     {
         $filename = $fileUpload->getSanitizedName();
         $filename = Strings::lower($filename);
@@ -51,10 +40,7 @@ class Utils
     }
 
 
-    /**
-     * @param string $dir
-     */
-    public static function makeDirectoryRecursive($dir)
+    public static function makeDirectoryRecursive(string $dir): void
     {
         $dir = self::normalizePath($dir);
 
@@ -84,7 +70,7 @@ class Utils
      * @return FileUpload
      * @throws \ondrs\UploadManager\FileNotExistsException
      */
-    public static function fileUploadFromFile($filename)
+    public static function fileUploadFromFile(string $filename): FileUpload
     {
         if (!file_exists($filename)) {
             throw new FileNotExistsException("File '$filename' does not exists");

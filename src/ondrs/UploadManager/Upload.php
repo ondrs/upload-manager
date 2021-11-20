@@ -45,7 +45,7 @@ class Upload
      * @param string $namespace
      * @return SplFileInfo[]
      */
-    public function filesToDir($namespace)
+    public function filesToDir(string $namespace): array
     {
         $uploadedFiles = [];
 
@@ -79,19 +79,18 @@ class Upload
 
 
     /**
-     * @param string     $namespace
+     * @param string $namespace
      * @param FileUpload $fileUpload
      * @return SplFileInfo
      * @throws \ondrs\UploadManager\InvalidArgumentException
      * @throws UploadErrorException
      */
-    public function singleFileToDir($namespace, FileUpload $fileUpload)
+    public function singleFileToDir(string $namespace, FileUpload $fileUpload): SplFileInfo
     {
         if ($error = $fileUpload->getError()) {
             throw new UploadErrorException($error);
         }
 
-        /** @var IManager $manager */
         $manager = $this->managerProvider->get($fileUpload);
 
         $relativePath = Utils::normalizePath($manager->getStorage()->getRelativePath() . '/' . $namespace);
