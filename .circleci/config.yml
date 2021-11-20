@@ -3,12 +3,12 @@ version: 2
 jobs:
   build:
     docker:
-      
       - image: docker:20
 
     steps:
       - checkout
 
+      - run: apk add make
       - run: make build
       
       # Download and cache dependencies
