@@ -5,6 +5,7 @@ namespace ondrs\UploadManager\DI;
 use Nette\Configurator;
 use Nette\DI\Compiler;
 use Nette\DI\CompilerExtension;
+use Nette\Schema\Helpers;
 use ondrs\UploadManager\Exception;
 use ondrs\UploadManager\ImageProcessor;
 use ondrs\UploadManager\ManagerContainer;
@@ -34,34 +35,42 @@ class Extension extends CompilerExtension
     ];
 
 
-    public function loadConfiguration()
+    /**
+     * @throws Exception
+     */
+    public function loadConfiguration(): void
     {
-        $config = $this->getConfig($this->defaults);
         $builder = $this->getContainerBuilder();
+        $params = $builder->parameters;
+
+        $this->defaults['tempDir'] = $params['tempDir'];
+        $this->defaults['basePath'] = $params['wwwDir'];
+
+        $config = Helpers::merge($this->getConfig(), $this->defaults);
 
         if ($config['relativePath'] === NULL) {
             throw new Exception('relativePath must be set');
         }
 
         $builder->addDefinition($this->prefix('storage'))
-            ->setClass(FileStorage::class, [
+            ->setFactory(FileStorage::class, [
                 $config['basePath'],
                 $config['relativePath'],
             ]);
 
         $builder->addDefinition($this->prefix('managerProvider'))
-            ->setClass(ManagerProvider::class);
+            ->setFactory(ManagerProvider::class);
 
         $builder->addDefinition($this->prefix('managerContainer'))
-            ->setClass(ManagerContainer::class);
+            ->setFactory(ManagerContainer::class);
 
         $builder->addDefinition($this->prefix('imageProcessor'))
-            ->setClass(ImageProcessor::class, [
+            ->setFactory(ImageProcessor::class, [
                 $config['tempDir'],
             ]);
 
         $builder->addDefinition($this->prefix('imageManager'))
-            ->setClass(ImageManager::class, [
+            ->setFactory(ImageManager::class, [
                 $builder->getDefinition($this->prefix('storage')),
                 $builder->getDefinition($this->prefix('imageProcessor')),
                 $config['tempDir'],
@@ -77,20 +86,17 @@ class Extension extends CompilerExtension
         }
 
         $builder->addDefinition($this->prefix('fileManager'))
-            ->setClass(FileManager::class, [
+            ->setFactory(FileManager::class, [
                 $builder->getDefinition($this->prefix('storage')),
                 $config['fileManager']['blacklist'],
             ]);
 
         $builder->addDefinition($this->prefix('upload'))
-            ->setClass(Upload::class);
+            ->setFactory(Upload::class);
     }
 
 
-    /**
-     * @param Configurator $configurator
-     */
-    public static function register(Configurator $configurator)
+    public static function register(Configurator $configurator): void
     {
         $configurator->onCompile[] = function ($config, Compiler $compiler) {
             $compiler->addExtension('UploadManager', new Extension());

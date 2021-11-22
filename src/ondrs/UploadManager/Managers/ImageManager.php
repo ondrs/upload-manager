@@ -173,7 +173,7 @@ class ImageManager implements IManager
     }
 
 
-    public function setType(string $type): ?string
+    public function setType(string $type): void
     {
         if (isset(self::$types[$type])) {
             $this->type = self::$types[$type];
